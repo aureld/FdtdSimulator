@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+# define M_PI 3.14159265358979323846 /* pi */
+
 //FDTD grid containing all field cells and time data
 struct Grid {
 	double		*ez;		//Ez field pointer (1D)

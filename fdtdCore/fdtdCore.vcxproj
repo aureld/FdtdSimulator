@@ -80,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="abc.c" />
-    <ClCompile Include="ezInc.c" />
+    <ClCompile Include="ezincharm.c" />
     <ClCompile Include="fdtdCore.c" />
     <ClCompile Include="gridinit.c" />
     <ClCompile Include="snapshot.c" />

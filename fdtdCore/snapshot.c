@@ -9,16 +9,16 @@ static int startTime;
 static int startNode;
 static int endNode;
 static int frame = 0;
-static char basename[80] = "sim";
+static char basename[80] = "results\\sim";
 
 //initializes the snapshots with hardcoded values
 void snapshotInit(Grid *g)
 {
 	temporalStride = 10;
-	startTime = 100;
+	startTime = 0;
 	startNode = 0;
-	endNode = 250;
-	spatialStride = 10;
+	endNode = 400;
+	spatialStride = 1;
 	return;
 }
 

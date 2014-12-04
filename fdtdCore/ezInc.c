@@ -12,11 +12,6 @@ static double cdtds;
 void ezIncInit(Grid *g)
 {
 	cdtds = Cdtds;
-	//printf("Enter delay: ");
-	//scanf("%f", &delay);
-	//printf("Enter width: ");
-	//scanf("%f", &width);
-
 	delay = 1;
 	width = 10;
 
