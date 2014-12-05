@@ -2,7 +2,9 @@
 // see http://www.eecs.wsu.edu/~schneidj
 // Aurelien Duval 2014
 
-#include "fdtd.h"
+#include "fdtd-alloc.h"
+#include "fdtd-macros.h"
+#include "fdtd-protos.h"
 #include "ezinc.h"
 
 int main(int argc, char* argv[])
@@ -12,17 +14,15 @@ int main(int argc, char* argv[])
 	ALLOC_1D(g, 1, Grid);
 
 	gridInit(g);
-	abcInit(g);
-	tfsfInit(g);
+	ezIncInit(g);
 	snapshotInit(g);
 
 	/* time stepping */
 	for (Time = 0; Time < MaxTime; Time++)
 	{
 		updateH(g);
-		tfsfUpdate(g);
 		updateE(g);
-		abc(g);
+		Ez(SizeX / 2, SizeY / 2) = ezInc(Time, 0.0); // source
 		snapshot(g);
 	}
 

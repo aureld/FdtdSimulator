@@ -1,4 +1,4 @@
-// ezincharm.c : input field with harmonic time dependance
+// ricker.c : Ricker wavelet source
 // Aurelien Duval 2014
 
 #include "ezinc.h"
@@ -18,10 +18,15 @@ void ezIncInit(Grid *g)
 //calculates the input field at specified time and location
 double ezInc(double time, double location)
 {
+	double arg;
+
 	if (ppw <= 0) {
-		fprintf(stderr, "ezincharm: uninitialized input, ppw must be > 0.\n");
+		fprintf(stderr, "ricker: uninitialized input, ppw must be > 0.\n");
 		exit(-1);
 	}
 
-	return sin(2.0 * M_PI / ppw * (cdtds * time - location));
+	arg = M_PI * ((cdtds * time - location) / ppw - 1.0);
+	arg = arg * arg;
+
+	return (1.0 - 2.0 * arg) * exp(-arg);
 }

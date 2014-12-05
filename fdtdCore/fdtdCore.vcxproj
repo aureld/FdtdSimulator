@@ -79,17 +79,18 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="abc.c" />
-    <ClCompile Include="ezincharm.c" />
     <ClCompile Include="fdtdCore.c" />
     <ClCompile Include="gridinit.c" />
+    <ClCompile Include="ricker.c" />
     <ClCompile Include="snapshot.c" />
-    <ClCompile Include="tfsf.c" />
     <ClCompile Include="update.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ezinc.h" />
-    <ClInclude Include="fdtd.h" />
+    <ClInclude Include="fdtd-alloc.h" />
+    <ClInclude Include="fdtd-grid.h" />
+    <ClInclude Include="fdtd-macros.h" />
+    <ClInclude Include="fdtd-protos.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

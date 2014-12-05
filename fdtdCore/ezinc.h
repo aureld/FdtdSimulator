@@ -7,7 +7,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "fdtd.h"
+#include "fdtd-grid.h"
 
 void ezIncInit(Grid *g);
 double ezInc(double time, double location);
