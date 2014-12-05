@@ -3,9 +3,8 @@
 
 #include "fdtd.h"
 
-#define LOSS		0.01
-#define LOSS_LAYER	100		//position of loss media
-#define EPSR		4.0		//material epsilon
+
+#define EPSR		9.0		//material epsilon
 
 //initializes the grid
 void gridInit(Grid *g)
@@ -13,8 +12,8 @@ void gridInit(Grid *g)
 	double imp0 = 377.0;	//cross impedance of free-space
 	int mm;
 
-	SizeX = 400;			//fdtd domain size
-	MaxTime = 2000;			//simulation duration
+	SizeX = 200;			//fdtd domain size
+	MaxTime = 1000;			//simulation duration
 	Cdtds = 1.0;			//courant number
 
 	//memory allocation
@@ -34,8 +33,8 @@ void gridInit(Grid *g)
 			Cezh(mm) = imp0;
 		}
 		else {
-			Ceze(mm) = (1.0 - LOSS) / (1.0 + LOSS);
-			Cezh(mm) = imp0 / EPSR / (1.0 + LOSS);
+			Ceze(mm) = 1.0;
+			Cezh(mm) = imp0 / EPSR;
 		}
 	}
 

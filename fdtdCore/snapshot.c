@@ -17,7 +17,7 @@ void snapshotInit(Grid *g)
 	temporalStride = 10;
 	startTime = 0;
 	startNode = 0;
-	endNode = 400;
+	endNode = 200;
 	spatialStride = 1;
 	return;
 }

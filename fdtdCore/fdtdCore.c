@@ -10,6 +10,7 @@ int main(int argc, char* argv[])
 	Grid *g;
 
 	ALLOC_1D(g, 1, Grid);
+
 	gridInit(g);
 	abcInit(g);
 	tfsfInit(g);
@@ -20,8 +21,8 @@ int main(int argc, char* argv[])
 	{
 		updateH(g);
 		tfsfUpdate(g);
-		abc(g);
 		updateE(g);
+		abc(g);
 		snapshot(g);
 	}
 
