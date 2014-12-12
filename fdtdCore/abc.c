@@ -1,79 +1,166 @@
 // update.c : Absorbing boundary conditions
 // Aurelien Duval 2014
 
-#include "fdtd.h"
-#include <math.h>
+#include "fdtd-alloc.h"
+#include "fdtd-macros.h"
 
-static int initDone = 0;
-static double *ezOldLeft1;
-static double *ezOldLeft2;
-static double *ezOldRight1;
-static double *ezOldRight2;
-static double *abcCoefLeft;
-static double *abcCoefRight;
 
-//initializes the ABC (2nd order diff equation or Mur ABC)
+//macros 
+#define Eyx0(N, P)	eyx0[(N) * (SizeZ)		+ (P)] // x left face, Ey tangential field
+#define Ezx0(N, P)	ezx0[(N) * (SizeZ - 1)	+ (P)] // x left face, Ez tangential field
+#define Eyx1(N, P)	eyx1[(N) * (SizeZ)		+ (P)] // x right face, Ey tangential field
+#define Ezx1(N, P)	ezx1[(N) * (SizeZ - 1)	+ (P)] // x right face, Ez tangential field
+
+#define Exy0(N, P)	exy0[(N) * (SizeZ)		+ (P)] // y left face, Ex tangential field
+#define Ezy0(N, P)	ezy0[(N) * (SizeZ - 1)	+ (P)] // y left face, Ez tangential field
+#define Exy1(N, P)	exy1[(N) * (SizeZ)		+ (P)] // y right face, Ex tangential field
+#define Ezy1(N, P)	ezy1[(N) * (SizeZ - 1)	+ (P)] // y right face, Ez tangential field
+
+#define Exz0(N, P)	exz0[(N) * (SizeY)		+ (P)] // z left face, Ex tangential field
+#define Eyz0(N, P)	eyz0[(N) * (SizeY - 1)	+ (P)] // z left face, Ey tangential field
+#define Exz1(N, P)	exz1[(N) * (SizeY)		+ (P)] // z right face, Ex tangential field
+#define Eyz1(N, P)	eyz1[(N) * (SizeY - 1)	+ (P)] // z right face, Ey tangential field
+
+static float abccoef = 0.0;
+static float *eyx0, *eyx1, *ezx0, *ezx1;
+static float *exy0, *exy1, *ezy0, *ezy1;
+static float *exz0, *exz1, *eyz0, *eyz1;
+
+
+//initializes the ABC (1st order diff equation)
 void abcInit(Grid *g)
 {
-	double temp1, temp2;
+	abccoef = (Cdtds - 1.0) / (Cdtds + 1.0);
 
-	ALLOC_1D(ezOldLeft1, 3, double);
-	ALLOC_1D(ezOldLeft2, 3, double);
-	ALLOC_1D(ezOldRight1, 3, double);
-	ALLOC_1D(ezOldRight2, 3, double);
-	ALLOC_1D(abcCoefLeft, 3, double);
-	ALLOC_1D(abcCoefRight, 3, double);
+	//memory allocation
+	ALLOC_2D(eyx0, SizeY - 1, SizeZ, float);
+	ALLOC_2D(ezx0, SizeY, SizeZ - 1, float);
+	ALLOC_2D(eyx1, SizeY - 1, SizeZ, float);
+	ALLOC_2D(ezx1, SizeY, SizeZ - 1, float);
+	
+	ALLOC_2D(exy0, SizeY - 1, SizeZ, float);
+	ALLOC_2D(ezy0, SizeY, SizeZ - 1, float);
+	ALLOC_2D(exy1, SizeY - 1, SizeZ, float);
+	ALLOC_2D(ezy1, SizeY, SizeZ - 1, float);
 
+	ALLOC_2D(exz0, SizeY - 1, SizeZ, float);
+	ALLOC_2D(eyz0, SizeY, SizeZ - 1, float);
+	ALLOC_2D(exz1, SizeY - 1, SizeZ, float);
+	ALLOC_2D(eyz1, SizeY, SizeZ - 1, float);
 
-	/* left boundary coefficient */
-	temp1 = sqrt(Cezh(0) * Chye(0));
-	temp2 = 1.0 / temp1 + 2.0 + temp1;
-	abcCoefLeft[0] = -(1.0 / temp1 - 2.0 + temp1) / temp2;
-	abcCoefLeft[1] = -2.0 * (temp1 - 1.0 / temp1) / temp2;
-	abcCoefLeft[2] =  4.0 * (temp1 + 1.0 / temp1) / temp2;
-
-
-	/* right boundary coefficient */
-	temp1 = sqrt(Cezh(SizeX -1) * Chye(SizeX -2));
-	temp2 = 1.0 / temp1 + 2.0 + temp1;
-	abcCoefRight[0] = -(1.0 / temp1 - 2.0 + temp1) / temp2;
-	abcCoefRight[1] = -2.0 * (temp1 - 1.0 / temp1) / temp2;
-	abcCoefRight[2] = 4.0 * (temp1 + 1.0 / temp1) / temp2;
-
-	initDone = 1;
 	return;
 }
 
-//apply the ABC
+//apply the ABC to all 6 faces of the domain
 void abc(Grid *g)
 {
-	int mm ;
+	int mm, nn, pp;
 
-	if (!initDone) {
+	if (abccoef == 0.0) {
 		fprintf(stderr, "abc: uninitialized boundaries, call abcInit first.\n");
 		exit(-1);
 	}
 
-	/* left boundary */
-	Ez(0) =		abcCoefLeft[0] * (Ez(2) + ezOldLeft2[0])
-			+	abcCoefLeft[1] * (ezOldLeft1[0] + ezOldLeft1[2] - Ez(1) - ezOldLeft2[1])
-			+	abcCoefLeft[2] *  ezOldLeft1[1] - ezOldLeft2[2];
-								;
+	//x left boundary
+	mm = 0;
+	for (nn = 0; nn < SizeY - 1; nn++)
+		for (pp = 0; pp < SizeZ; pp++)
+		{
+			Ey(mm, nn, pp) = Eyx0(nn, pp)
+							+ abccoef * (Ey(mm + 1, nn, pp) - Ey(mm, nn, pp));
+			Eyx0(nn, pp) = Ey(mm + 1, nn, pp);
+		}
+	for (nn = 0; nn < SizeY; nn++)
+		for (pp = 0; pp < SizeZ - 1; pp++)
+		{
+			Ez(mm, nn, pp) = Ezx0(nn, pp)
+				+ abccoef * (Ez(mm + 1, nn, pp) - Ez(mm, nn, pp));
+			Ezx0(nn, pp) = Ez(mm + 1, nn, pp);
+		}
+		
+	//x right boundary
+	mm = SizeX - 1;
+	for (nn = 0; nn < SizeY - 1; nn++)
+		for (pp = 0; pp < SizeZ; pp++)
+		{
+			Ey(mm, nn, pp) = Eyx1(nn, pp)
+				+ abccoef * (Ey(mm - 1, nn, pp) - Ey(mm, nn, pp));
+			Eyx1(nn, pp) = Ey(mm - 1, nn, pp);
+		}
+	for (nn = 0; nn < SizeY; nn++)
+		for (pp = 0; pp < SizeZ - 1; pp++)
+		{
+			Ez(mm, nn, pp) = Ezx1(nn, pp)
+				+ abccoef * (Ez(mm - 1, nn, pp) - Ez(mm, nn, pp));
+			Ezx1(nn, pp) = Ez(mm - 1, nn, pp);
+		}
 
-	/* right boundary */
-	Ez(SizeX-1) =	abcCoefRight[0] * (Ez(SizeX -3) + ezOldRight2[0])
-				+	abcCoefRight[1] * (ezOldRight1[0] + ezOldRight1[2] - Ez(SizeX-2) - ezOldRight2[1])
-				+	abcCoefRight[2] * ezOldRight1[1] - ezOldRight2[2];
+	//y left boundary
+	nn = 0;
+	for (mm = 0; mm < SizeX - 1; mm++)
+		for (pp = 0; pp < SizeZ; pp++)
+		{
+			Ex(mm, nn, pp) = Exy0(nn, pp)
+				+ abccoef * (Ex(mm, nn + 1, pp) - Ex(mm, nn, pp));
+			Exy0(nn, pp) = Ex(mm, nn + 1, pp);
+		}
+	for (mm = 0; mm < SizeX; mm++)
+		for (pp = 0; pp < SizeZ - 1; pp++)
+		{
+			Ez(mm, nn, pp) = Ezy0(nn, pp)
+				+ abccoef * (Ez(mm, nn + 1, pp) - Ez(mm, nn, pp));
+			Ezy0(nn, pp) = Ez(mm, nn + 1, pp);
+		}
+		
+	//y right boundary
+	nn = SizeY - 1;
+	for (mm = 0; mm < SizeX - 1; mm++)
+		for (pp = 0; pp < SizeZ; pp++)
+		{
+			Ex(mm, nn, pp) = Exy1(nn, pp)
+				+ abccoef * (Ex(mm, nn - 1, pp) - Ex(mm, nn, pp));
+			Exy1(nn, pp) = Ex(mm, nn - 1, pp);
+		}
+	for (mm = 0; mm < SizeX; mm++)
+		for (pp = 0; pp < SizeZ - 1; pp++)
+		{
+			Ez(mm, nn, pp) = Ezy1(nn, pp)
+				+ abccoef * (Ez(mm, nn - 1, pp) - Ez(mm, nn, pp));
+			Ezy1(nn, pp) = Ez(mm, nn - 1, pp);
+		}
 
-	/* update old fields */
-	for (mm = 0; mm < 3; mm++)
-	{
-		ezOldLeft2[mm] = ezOldLeft1[mm];
-		ezOldLeft1[mm] = Ez(mm);
+	//z left boundary
+	pp = 0;
+	for (mm = 0; mm < SizeX - 1; mm++)
+		for (nn = 0; nn < SizeY; nn++)
+		{
+			Ex(mm, nn, pp) = Exz0(nn, pp)
+				+ abccoef * (Ex(mm, nn, pp + 1) - Ex(mm, nn, pp));
+			Exz0(nn, pp) = Ex(mm, nn, pp + 1);
+		}
+	for (mm = 0; mm < SizeX; mm++)
+		for (nn = 0; nn < SizeY - 1; nn++)
+		{
+			Ey(mm, nn, pp) = Eyz0(nn, pp)
+				+ abccoef * (Ey(mm, nn, pp + 1) - Ey(mm, nn, pp));
+			Eyz0(nn, pp) = Ey(mm, nn, pp + 1);
+		}
 
-		ezOldRight2[mm] = ezOldRight1[mm];
-		ezOldRight1[mm] = Ez(SizeX -1 - mm);
-	}
-
+	//z right boundary
+	pp = SizeZ - 1;
+	for (mm = 0; mm < SizeX - 1; mm++)
+		for (nn = 0; nn < SizeY; nn++)
+		{
+		Ex(mm, nn, pp) = Exz1(nn, pp)
+			+ abccoef * (Ex(mm, nn, pp - 1) - Ex(mm, nn, pp));
+		Exz1(nn, pp) = Ex(mm, nn, pp - 1);
+		}
+	for (mm = 0; mm < SizeX; mm++)
+		for (nn = 0; nn < SizeY - 1; nn++)
+		{
+		Ey(mm, nn, pp) = Eyz1(nn, pp)
+			+ abccoef * (Ey(mm, nn, pp - 1) - Ey(mm, nn, pp));
+		Eyz1(nn, pp) = Ey(mm, nn, pp - 1);
+		}
 	return;
 }

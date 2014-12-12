@@ -20,4 +20,12 @@ void tfsfUpdate(Grid *g);
 void snapshotInit(Grid *g);
 void snapshot(Grid *g);
 
+void updateEx(Grid *g);
+void updateEy(Grid *g);
+void updateEz(Grid *g);
+void updateHx(Grid *g);
+void updateHy(Grid *g);
+void updateHz(Grid *g);
+
+
 #endif /*_FDTD_PROTOS_H_*/

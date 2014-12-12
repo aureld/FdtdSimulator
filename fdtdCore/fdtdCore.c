@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
 	ALLOC_1D(g, 1, Grid);
 
 	gridInit(g);
+	//abcInit(g);
 	ezIncInit(g);
 	snapshotInit(g);
 
@@ -22,8 +23,10 @@ int main(int argc, char* argv[])
 	{
 		updateH(g);
 		updateE(g);
-		Ez(SizeX / 2, SizeY / 2) = ezInc(Time, 0.0); // source
-		snapshot(g);
+		g->ez[idx(g, g->sizeX / 2, g->sizeY / 2, g->sizeZ / 2)] += ezInc(Time, 0.0); // source
+		//abc(g);
+		//snapshot(g);
+		print(g, 1, 0);
 	}
 
 	return 0;
