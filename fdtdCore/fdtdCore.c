@@ -2,10 +2,10 @@
 // see http://www.eecs.wsu.edu/~schneidj
 // Aurelien Duval 2014
 
+#include <stdio.h>
 #include "fdtd-alloc.h"
 #include "fdtd-macros.h"
 #include "fdtd-protos.h"
-#include "ezinc.h"
 
 int main(int argc, char* argv[])
 {
@@ -19,14 +19,15 @@ int main(int argc, char* argv[])
 	snapshotInit(g);
 
 	/* time stepping */
-	for (Time = 0; Time < MaxTime; Time++)
+	for (g->time = 0; g->time < g->maxTime; g->time++)
 	{
 		updateH(g);
 		updateE(g);
-		g->ez[idx(g, g->sizeX / 2, g->sizeY / 2, g->sizeZ / 2)] += ezInc(Time, 0.0); // source
+		g->ex[idx(g, g->sizeX / 2, g->sizeY / 2, g->sizeZ / 2)] += ezInc(g->time, 0); // source
 		//abc(g);
 		//snapshot(g);
-		print(g, 1, 0);
+		//print(g, 1, 0);
+		printf(".");
 	}
 
 	return 0;

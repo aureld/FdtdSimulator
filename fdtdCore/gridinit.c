@@ -11,37 +11,41 @@ void gridInit(Grid *g)
 	float imp0 = 377.0;				//cross impedance of free-space
 	int mm,nn,pp;
 	long i;
+	float coefmul, coefdiv;
 	
-	Type = threeDGrid;
-	SizeX = 5;							//fdtd domain size X
-	SizeY = 5;							//fdtd domain size Y
-	SizeZ = 5;							//fdtd domain size Z
-	MaxTime = 10;						//simulation duration
-	Cdtds = 1.0 / sqrt(3.0);			//courant number for 3D
+	g->type = threeDGrid;
+	g->sizeX = 50;							//fdtd domain size X
+	g->sizeY = 50;							//fdtd domain size Y
+	g->sizeZ = 50;							//fdtd domain size Z
+	g->maxTime = 50;						//simulation duration
+	g->cdtds = (float)(1.0 / sqrt(3.0));			//courant number for 3D
 
 	//memory allocation
-	ALLOC_3D(g->hx,		SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->chxh,	SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->chxe,	SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->hy,		SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->chyh,	SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->chye,	SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->hz,		SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->chzh,	SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->chze,	SizeX,	SizeY,	SizeZ,	float);
-
-	ALLOC_3D(g->ex,		SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->cexe,	SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->cexh,	SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->ey,		SizeX,	SizeY ,	SizeZ,	float);
-	ALLOC_3D(g->ceye,	SizeX,	SizeY ,	SizeZ,	float);
-	ALLOC_3D(g->ceyh,	SizeX,	SizeY ,	SizeZ,	float);
-	ALLOC_3D(g->ez,		SizeX,	SizeY ,	SizeZ,	float);
-	ALLOC_3D(g->ceze,	SizeX,	SizeY,	SizeZ,	float);
-	ALLOC_3D(g->cezh,	SizeX,	SizeY,	SizeZ,	float);
+	ALLOC_3D(g->hx,		g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->chxh,	g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->chxe,	g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->hy,		g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->chyh,	g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->chye,	g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->hz,		g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->chzh,	g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->chze,	g->sizeX,	g->sizeY,	g->sizeZ,	float);
+												
+	ALLOC_3D(g->ex,		g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->cexe,	g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->cexh,	g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->ey,		g->sizeX,	g->sizeY ,	g->sizeZ,	float);
+	ALLOC_3D(g->ceye,	g->sizeX,	g->sizeY ,	g->sizeZ,	float);
+	ALLOC_3D(g->ceyh,	g->sizeX,	g->sizeY ,	g->sizeZ,	float);
+	ALLOC_3D(g->ez,		g->sizeX,	g->sizeY ,	g->sizeZ,	float);
+	ALLOC_3D(g->ceze,	g->sizeX,	g->sizeY,	g->sizeZ,	float);
+	ALLOC_3D(g->cezh,	g->sizeX,	g->sizeY,	g->sizeZ,	float);
 	
 
 	/* Ex field update coefficients */
+	coefmul = g->cdtds * imp0;
+	coefdiv = g->cdtds / imp0;
+
 	for (mm = 0; mm < g->sizeX; mm++)
 	{
 		for (nn = 0; nn < g->sizeY; nn++)
@@ -49,19 +53,20 @@ void gridInit(Grid *g)
 			for (pp = 0; pp < g->sizeZ; pp++)
 			{
 				i = idx(g, mm, nn, pp);
+
 				g->cexe[i] = 1.0;
-				g->cexh[i] = Cdtds * imp0;
+				g->cexh[i] = coefmul;
 				g->ceye[i] = 1.0;
-				g->ceyh[i] = Cdtds * imp0;
+				g->ceyh[i] = coefmul;
 				g->ceze[i] = 1.0;
-				g->cezh[i] = Cdtds * imp0;
+				g->cezh[i] = coefmul;
 
 				g->chxh[i] = 1.0;
-				g->chxe[i] = Cdtds / imp0;
+				g->chxe[i] = coefdiv;
 				g->chyh[i] = 1.0;
-				g->chye[i] = Cdtds / imp0;
+				g->chye[i] = coefdiv;
 				g->chzh[i] = 1.0;
-				g->chze[i] = Cdtds / imp0;
+				g->chze[i] = coefdiv;
 			}
 		}
 	}

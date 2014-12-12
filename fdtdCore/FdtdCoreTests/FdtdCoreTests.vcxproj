@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2787094E-22BA-43B2-9082-FA91CF755717}</ProjectGuid>
+    <ProjectGuid>{7C7B2BBF-E3FF-4ADA-A19F-4AEC2948B070}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>fdtdCore</RootNamespace>
+    <RootNamespace>FdtdCoreTests</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -41,8 +41,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <ExtensionsToDeleteOnClean>*.f3d;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Projects\FDTDsimC\fdtdCore\lib\tiff-4.0.3\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -54,15 +53,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Projects\FDTDsimC\libTiff;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Projects\FDTDsimC\fdtdCore\lib\tiff-4.0.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libtiff.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent>
-      <Command>createresults.bat</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -82,22 +79,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="fdtdCore.c" />
-    <ClCompile Include="gridinit.c" />
-    <ClCompile Include="ricker.c" />
-    <ClCompile Include="snapshot.c" />
-    <ClCompile Include="update.c" />
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="fdtd-alloc.h" />
-    <ClInclude Include="fdtd-grid.h" />
-    <ClInclude Include="fdtd-macros.h" />
-    <ClInclude Include="fdtd-protos.h" />
+    <ClCompile Include="FdtdCoreTests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <Target Name="AfterClean">
-    <RemoveDir Directories="results" />
-  </Target>
 </Project>

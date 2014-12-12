@@ -19,7 +19,7 @@ void snapshotInit(Grid *g)
 }
 
 //captures a snapshot of the grid if conditions are met
-void snapshot(Grid *g)
+void snapshotF3D(Grid *g)
 {
 	int mm, nn, pp;
 	float temp;
@@ -32,7 +32,7 @@ void snapshot(Grid *g)
 		exit(-1);
 	}
 
-	if (Time >= startTime && (Time - startTime) % temporalStride == 0)
+	if (g->time >= startTime && (g->time - startTime) % temporalStride == 0)
 	{
 		/* Write the X = center slice */
 		sprintf(filename, "%s-x.%d.f3d", basename, frameX++);
@@ -41,48 +41,52 @@ void snapshot(Grid *g)
 		//we store everything as floats for output
 
 		//dimensions first
-		dim1 = SizeY;
-		dim2 = SizeZ;
+		dim1 = g->sizeY;
+		dim2 = g->sizeZ;
 		fprintf(snapshot, "OPTI3DREAL\n");
 		fprintf(snapshot, "%d %d\n", dim1, dim2);
-		fprintf(snapshot, "%d %d %d %d 0 1\n", 0, SizeY-1, 0, SizeZ-1);
+		fprintf(snapshot, "%d %d %d %d 0 1\n", 0, dim1 - 1, 0, dim2 - 1);
 		//write the data itself
-		mm = (SizeX) / 2;
-		for (pp = SizeZ-1; pp >= 0; pp--)
-			for (nn = 0; nn < SizeY; nn++)
+		mm = (g->sizeX) / 2;
+		for (pp = g->sizeZ - 1; pp >= 0; pp--)
+			for (nn = 0; nn < dim1; nn++)
 			{
-				temp = (float)Ex(mm, nn, pp);
+				temp = g->ex[idx(g,mm, nn, pp)];
 				fprintf(snapshot, "%f\n", temp);
 			}
 
 		fclose(snapshot);
+		
+		
+		
+		///* Write the Y = center slice */
+		//sprintf(filename, "%s-y.%d.f3d", basename, frameY++);
+		//snapshot = fopen(filename, "w");
 
-		/* Write the Y = center slice */
-		sprintf(filename, "%s-y.%d.f3d", basename, frameY++);
-		snapshot = fopen(filename, "w");
+		////we store everything as floats for output
 
-		//we store everything as floats for output
-
-		//dimensions first
-		dim1 = SizeX - 1;
-		dim2 = SizeZ;
-		fprintf(snapshot, "OPTI3DREAL\n");
-		fprintf(snapshot, "%d %d\n", dim1, dim2);
-		fprintf(snapshot, "%d %d %d %d 0 1\n", 0, SizeX - 2, 0, SizeZ - 1);
-		//write the data itself
-		nn = SizeY / 2;
-		for (pp = SizeZ - 1; pp >= 0; pp--)
-			for (mm = 0; mm < SizeX; mm++)
-			{
-			temp = (float)Ex(mm, nn, pp);
-			fprintf(snapshot, "%f\n", temp);
-			}
-
-		fclose(snapshot);
+		////dimensions first
+		//dim1 = SizeX - 1;
+		//dim2 = SizeZ;
+		//fprintf(snapshot, "OPTI3DREAL\n");
+		//fprintf(snapshot, "%d %d\n", dim1, dim2);
+		//fprintf(snapshot, "%d %d %d %d 0 1\n", 0, SizeX - 2, 0, SizeZ - 1);
+		////write the data itself
+		//nn = SizeY / 2;
+		//for (pp = SizeZ - 1; pp >= 0; pp--)
+		//	for (mm = 0; mm < SizeX; mm++)
+		//	{
+		//	temp = (float)Ex(mm, nn, pp);
+		//	fprintf(snapshot, "%f\n", temp);
+		//	}
+		//
+		//fclose(snapshot);
 	}
-
+	
 	return;
 }
+
+
 
 void print(Grid *g, int slice, int orientation)
 {

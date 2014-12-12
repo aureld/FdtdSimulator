@@ -9,35 +9,7 @@
 //update equation for H field
 void updateH(Grid *g) 
 {
-	int mm,nn, pp;
-
-	if (Type == oneDGrid) {
-		for (mm = 0; mm < g->sizeX - 1; mm++)
-			//Hy update
-			Hy1(mm) = Chyh1(mm) * Hy1(mm) 
-				+ Chye1(mm) * (Ez1(mm + 1) - Ez1(mm));
-	}
-	else if (Type == tmZGrid) {
-		//Hx update
-		for (mm = 0; mm < g->sizeX; mm++)
-			for (nn = 0; nn < g->sizeY - 1; nn++)
-				Hx2(mm, nn) = Chxh2(mm, nn) * Hx2(mm, nn)
-				- Chxe2(mm, nn) * (Ez2(mm, nn + 1) - Ez2(mm, nn));
-		//Hy update
-		for (mm = 0; mm < g->sizeX - 1; mm++)
-			for (nn = 0; nn < g->sizeY; nn++)
-				Hy2(mm, nn) = Chyh2(mm, nn) * Hy2(mm, nn)
-				+ Chye2(mm, nn) * (Ez2(mm + 1, nn) - Ez2(mm, nn));
-	}
-	else if (Type == teZGrid) {
-		//Hz update
-		for (mm = 0; mm < g->sizeX - 1; mm++)
-			for (nn = 0; nn < g->sizeY - 1; nn++)
-				Hz2(mm, nn) = Chzh2(mm, nn) * Hz2(mm, nn)
-				- Chze2(mm, nn) * ((Ey2(mm + 1 , nn) - Ey2(mm, nn))
-								-  (Ex2(mm, nn + 1) - Ex2(mm, nn)));
-	}
-	else if (Type == threeDGrid) {
+	if (g->type == threeDGrid) {
 		updateHx(g);
 		updateHy(g);
 		updateHz(g);
@@ -102,35 +74,7 @@ void updateHz(Grid *g)
 //update equation for E field
 void updateE(Grid *g)
 {
-	int mm, nn, pp;
-
-	if (Type == oneDGrid) {
-		//Ez update
-		for (mm = 1; mm < g->sizeX - 1; mm++)
-			Ez1(mm) = Ceze1(mm) * Ez1(mm) 
-			+ Cezh1(mm) * (Hy1(mm) - Hy1(mm - 1));
-	}
-	else if (Type == tmZGrid) {
-		//Ez update
-		for (mm = 1; mm < g->sizeX - 1; mm++)
-			for (nn = 1; nn < g->sizeY - 1; nn++)
-				Ez2(mm, nn) = Ceze2(mm, nn) * Ez2(mm, nn)
-				+ Cezh2(mm, nn) * ((Hy2(mm, nn) - Hy2(mm - 1, nn))
-								-  (Hx2(mm, nn) - Hx2(mm, nn - 1)));
-	}
-	else if (Type == teZGrid) {
-		///Ex update
-		for (mm = 1; mm < g->sizeX - 1; mm++)
-			for (nn = 1; nn < g->sizeY - 1; nn++)
-				Ex2(mm, nn) = Cexe2(mm, nn) * Ex2(mm, nn)
-				+ Cexh2(mm, nn) * (Hz2(mm, nn) - Hz2(mm, nn - 1));
-		///Ey update
-		for (mm = 1; mm < g->sizeX - 1; mm++)
-			for (nn = 1; nn < g->sizeY - 1; nn++)
-				Ey2(mm, nn) = Ceye2(mm, nn) * Ey2(mm, nn)
-				- Ceyh2(mm, nn) * (Hz2(mm, nn) - Hz2(mm - 1, nn));
-	}
-	else if (Type == threeDGrid) {
+	if (g->type == threeDGrid) {
 		updateEx(g);
 		updateEy(g);
 		updateEz(g);
