@@ -22,4 +22,6 @@ struct Grid {
 };
 typedef struct Grid Grid;
 
+
+
 #endif /*_FDTD_GRID_H_*/
