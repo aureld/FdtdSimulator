@@ -4,6 +4,7 @@
 #include <math.h>
 #include "fdtd-macros.h"
 #include "fdtd-alloc.h"
+#include "fdtd-protos.h"
 
 //initializes the grid
 void gridInit(Grid *g)
@@ -14,10 +15,10 @@ void gridInit(Grid *g)
 	float coefmul, coefdiv;
 	
 	g->type = threeDGrid;
-	g->sizeX = 256;							//fdtd domain size X
-	g->sizeY = 256;							//fdtd domain size Y
-	g->sizeZ = 6;							//fdtd domain size Z
-	g->maxTime = 500;						//simulation duration
+	g->sizeX = 64;							//fdtd domain size X
+	g->sizeY = 64;							//fdtd domain size Y
+	g->sizeZ = 64;							//fdtd domain size Z
+	g->maxTime = 100;						//simulation duration
 	g->cdtds = (float)(1.0 / sqrt(3.0));			//courant number for 3D
 
 	//memory allocation

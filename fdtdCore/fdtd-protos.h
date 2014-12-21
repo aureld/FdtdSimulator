@@ -24,9 +24,9 @@ void printTiffHeader(Grid *g, Orientation direction, int slice);
 void printTerminalRowDelim(int i);
 void printF3DRowDelim(int i);
 void printTiffRowDelim(int i);
-void printTerminalBody(Grid *g, float *field, int i, int j, int k);
-void printF3DBody(Grid *g, float *field, int i, int j, int k);
-void printTiffBody(Grid *g, float *field, int i, int j, int k);
+void printTerminalBody(Grid *g, float *field, int i, int j, int k, int indexer);
+void printF3DBody(Grid *g, float *field, int i, int j, int k, int indexer);
+void printTiffBody(Grid *g, float *field, int i, int j, int k, int indexer);
 void printF3DFooter();
 void printTiffFooter();
 void printTerminalFooter();
@@ -40,7 +40,5 @@ void updateHy(Grid *g);
 void updateHz(Grid *g);
 void ezIncInit(Grid *g);
 float ezInc(int time, int location);
-
-
 
 #endif /*_FDTD_PROTOS_H_*/

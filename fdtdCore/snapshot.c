@@ -11,8 +11,8 @@
 
 static int temporalStride = -2;
 static int startTime;
-static int frameX = 0, frameY = 0;
-static char basename[80] = "results\\sim";
+static int frameX = 0;
+static char basename[80] = "results/sim";
 static char filename[100] = "";
 static FILE* snapfile;
 static TIFF* tif;
@@ -183,8 +183,6 @@ void printTiffHeader(Grid *g, Orientation direction, int slice)
 
 	//row buffer (scanline write tiff)
 	buf = (float *)_TIFFmalloc(width * sizeof(float));
-	//buf = _TIFFmalloc(width*sizeof(float));
-	//buf = calloc(, sizeof(float));
 	_TIFFmemset(buf, 0, width*sizeof(float));
 
 }
@@ -209,21 +207,21 @@ void printF3DRowDelim(int i)
 }
 
 //we print the value to the terminal (tabulated) - to be passed as a function pointer (snapshotBody)
-void printTerminalBody(Grid *g, float *field, int i, int j, int k)
+void printTerminalBody(Grid *g, float *field, int i, int j, int k, int indexer)
 {
 	printf(" %3.2f\t", field[idx(g, i, j, k)]);
 }
 
 //we print the values to a F3D file - to be passed as a function pointer (snapshotBody)
-void printF3DBody(Grid *g, float *field, int i, int j, int k)
+void printF3DBody(Grid *g, float *field, int i, int j, int k, int indexer)
 {
 	fprintf(snapfile, "%3.6f\n", field[idx(g, i, j, k)]);
 }
 
 //we print the values to a Tiff file - to be passed as a function pointer (snapshotBody)
-void printTiffBody(Grid *g, float *field, int i, int j, int k)
+void printTiffBody(Grid *g, float *field, int i, int j, int k, int indexer)
 {
-	buf[j] = field[idx(g, i, j, k)];	
+	buf[indexer] = field[idx(g, i, j, k)];
 }
 
 //we do nothing - to be passed as as function pointer (snapshotFooter)
@@ -241,6 +239,7 @@ void printF3DFooter()
 //we close the file at the end - to be passed as as function pointer (snapshotFooter)
 void printTiffFooter()
 {
+	free(buf);
 	TIFFClose(tif);
 }
 
@@ -260,35 +259,35 @@ void snapshot(Grid *g, float *field, int slice, int orientation, Snapshot snap)
 
 	switch (orientation)
 	{
-	case 0: // XY plane
+	case XY: // XY plane
 		snap.header(g, XY, slice);
 		for (int i = 0; i < g->sizeX; i++)
 		{
 			for (int j = 0; j < g->sizeY; j++)
 			{
-				snap.body(g, field, i, j, slice);
+				snap.body(g, field, i, j, slice, j);
 			}
 			snap.rowDelim(i);
 		}
 		break;
-	case 1: // XZ plane
+	case XZ: // XZ plane
 		snap.header(g, XZ, slice);
 		for (int i = 0; i < g->sizeX; i++)
 		{
 			for (int j = 0; j < g->sizeZ; j++)
 			{
-				snap.body(g, field, i, slice, j);
+				snap.body(g, field, i, slice, j, j);
 			}
 			snap.rowDelim(i);
 		}
 		break;
-	case 2: // YZ plane
+	case YZ: // YZ plane
 		snap.header(g, YZ, slice);
 		for (int i = 0; i < g->sizeY; i++)
 		{
 			for (int j = 0; j < g->sizeZ; j++)
 			{
-				snap.body(g, field, slice, i, j);
+				snap.body(g, field, slice, i, j, j);
 			}
 			snap.rowDelim(i);
 		}

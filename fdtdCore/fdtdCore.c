@@ -7,6 +7,9 @@
 #include "fdtd-macros.h"
 #include "fdtd-protos.h"
 
+
+
+
 int main(int argc, char* argv[])
 {
 	Grid *g;
@@ -20,7 +23,6 @@ int main(int argc, char* argv[])
 	snapshotInit(g);
 	snaphotInitStartTime(0);
 	snaphotInitTemporalStride(5);
-	Snapshot f3dSnap = snapshotSetType(F3D);
 	Snapshot tiffSnap = snapshotSetType(TIFFIMG);
 
 	/* time stepping */
@@ -31,8 +33,7 @@ int main(int argc, char* argv[])
 		g->ex[idx(g, g->sizeX / 2, g->sizeY / 2, g->sizeZ / 2)] += ezInc(g->time, 0); // source
 		//abc(g);
 		
-		snapshot(g, g->ex, 1, 0, tiffSnap);
-		//snapshot(g, g->ex, 1, 0, f3dSnap);
+		snapshot(g, g->ex, 32, YZ, tiffSnap);
 
 		printf("time: %d / %d\n", g->time, g->maxTime-1);
 	}
