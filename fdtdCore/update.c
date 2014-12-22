@@ -23,6 +23,7 @@ void updateH(Grid *g)
 void updateHx(Grid *g)
 {
 	int mm, nn, pp;
+	#pragma omp parallel for private(mm,nn,pp)
 	for (mm = 0; mm < g->sizeX; mm++)
 	{
 		for (nn = 0; nn < g->sizeY-1; nn++)
@@ -40,6 +41,7 @@ void updateHx(Grid *g)
 void updateHy(Grid *g)
 {
 	int mm, nn, pp;
+	#pragma omp parallel for private(mm,nn,pp)
 	for (mm = 0; mm < g->sizeX-1; mm++)
 	{
 		for (nn = 0; nn < g->sizeY; nn++)
@@ -57,6 +59,7 @@ void updateHy(Grid *g)
 void updateHz(Grid *g)
 {
 	int mm, nn, pp;
+	#pragma omp parallel for private(mm,nn,pp)
 	for (mm = 0; mm < g->sizeX-1; mm++)
 	{
 		for (nn = 0; nn < g->sizeY-1; nn++)
@@ -88,6 +91,7 @@ void updateE(Grid *g)
 void updateEx(Grid *g)
 {
 	int mm, nn, pp;
+	#pragma omp parallel for private(mm,nn,pp)
 	for (mm = 0; mm < g->sizeX - 1; mm++)
 	{
 		for (nn = 1; nn < g->sizeY - 1; nn++)
@@ -105,6 +109,7 @@ void updateEx(Grid *g)
 void updateEy(Grid *g)
 {
 	int mm, nn, pp;
+	#pragma omp parallel for private(mm,nn,pp)
 	for (mm = 1; mm < g->sizeX - 1; mm++)
 	{
 		for (nn = 0; nn < g->sizeY - 1; nn++)
@@ -122,6 +127,7 @@ void updateEy(Grid *g)
 void updateEz(Grid *g)
 {
 	int mm, nn, pp;
+	#pragma omp parallel for private(mm,nn,pp)
 	for (mm = 1; mm < g->sizeX - 1; mm++)
 	{
 		for (nn = 1; nn < g->sizeY - 1; nn++)

@@ -15,10 +15,10 @@ void gridInit(Grid *g)
 	float coefmul, coefdiv;
 	
 	g->type = threeDGrid;
-	g->sizeX = 64;							//fdtd domain size X
-	g->sizeY = 64;							//fdtd domain size Y
-	g->sizeZ = 64;							//fdtd domain size Z
-	g->maxTime = 100;						//simulation duration
+	g->sizeX = 128;							//fdtd domain size X
+	g->sizeY = 128;							//fdtd domain size Y
+	g->sizeZ = 128;							//fdtd domain size Z
+	g->maxTime = 200;						//simulation duration
 	g->cdtds = (float)(1.0 / sqrt(3.0));			//courant number for 3D
 
 	//memory allocation

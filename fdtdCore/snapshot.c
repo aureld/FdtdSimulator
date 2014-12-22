@@ -246,6 +246,7 @@ void printTiffFooter()
 //generic snapshot function. To be called with function pointer for each type of snapshot
 void snapshot(Grid *g, float *field, int slice, int orientation, Snapshot snap)
 {
+	int i, j;
 
 	//did we initialize the snapshots?
 	if (!isInitialized()) {
@@ -261,9 +262,9 @@ void snapshot(Grid *g, float *field, int slice, int orientation, Snapshot snap)
 	{
 	case XY: // XY plane
 		snap.header(g, XY, slice);
-		for (int i = 0; i < g->sizeX; i++)
+		for (i = 0; i < g->sizeX; i++)
 		{
-			for (int j = 0; j < g->sizeY; j++)
+			for (j = 0; j < g->sizeY; j++)
 			{
 				snap.body(g, field, i, j, slice, j);
 			}
@@ -272,9 +273,9 @@ void snapshot(Grid *g, float *field, int slice, int orientation, Snapshot snap)
 		break;
 	case XZ: // XZ plane
 		snap.header(g, XZ, slice);
-		for (int i = 0; i < g->sizeX; i++)
+		for (i = 0; i < g->sizeX; i++)
 		{
-			for (int j = 0; j < g->sizeZ; j++)
+			for (j = 0; j < g->sizeZ; j++)
 			{
 				snap.body(g, field, i, slice, j, j);
 			}
@@ -283,9 +284,9 @@ void snapshot(Grid *g, float *field, int slice, int orientation, Snapshot snap)
 		break;
 	case YZ: // YZ plane
 		snap.header(g, YZ, slice);
-		for (int i = 0; i < g->sizeY; i++)
+		for (i = 0; i < g->sizeY; i++)
 		{
-			for (int j = 0; j < g->sizeZ; j++)
+			for (j = 0; j < g->sizeZ; j++)
 			{
 				snap.body(g, field, slice, i, j, j);
 			}
