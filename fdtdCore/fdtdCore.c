@@ -13,30 +13,32 @@
 int main(int argc, char* argv[])
 {
 	Grid *g;
+	Snapshot *snapshots;
 
 	ALLOC_1D(g, 1, Grid);
 
+
 	gridInit(g);
-	//abcInit(g);
 	ezIncInit(g);
 
 	snapshotInit(g);
 	snaphotInitStartTime(0);
 	snaphotInitTemporalStride(5);
-	Snapshot tiffSnap = snapshotSetType(TIFFIMG);
+
+	//we create a tiff snapshot
+	g->nbSnapshots = 1;
+	ALLOC_1D(snapshots, g->nbSnapshots, Snapshot);
+	snapshots[0] = snapshotSetType(TIFFIMG);
+	snapshots[0].direction = XY;
+	snapshots[0].field = EX;
+	snapshots[0].slice = g->sizeZ / 2;
+	snapshots[0].filename = "results/sim";
+	snapshots[0].width = g->sizeX;
+	snapshots[0].height = g->sizeY;
+
 
 	/* time stepping */
-	for (g->time = 0; g->time < g->maxTime; g->time++)
-	{
-		updateH(g);
-		updateE(g);
-		g->ex[idx(g, g->sizeX / 2, g->sizeY / 2, g->sizeZ / 2)] += ezInc(g->time, 0); // source
-		//abc(g);
-		
-		snapshot(g, g->ex, 32, YZ, tiffSnap);
-
-		printf("time: %d / %d\n", g->time, g->maxTime-1);
-	}
+	do_time_stepping(g, snapshots);
 
 	return 0;
 

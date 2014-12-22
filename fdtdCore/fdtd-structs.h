@@ -1,8 +1,9 @@
 //fdtd-grid.h: definitions for the FDTD grid
 // Aurelien Duval 2014
 
-#ifndef _FDTD_GRID_H_
-#define _FDTD_GRID_H_
+#pragma once
+#ifndef _FDTD_STRUCTS_H_
+#define _FDTD_STRUCTS_H_
 
 enum GRIDTYPE {oneDGrid, teZGrid, tmZGrid, threeDGrid};
 
@@ -19,9 +20,10 @@ struct Grid {
 	int			maxTime;	//final timestep
 	int			type;		// use with GRIDTYPE for 1D, 2D or 3D grids
 	float		cdtds;		//courant number
+	int			nbSnapshots; //number of snapshots to compute during time-stepping
 };
 typedef struct Grid Grid;
 
 
 
-#endif /*_FDTD_GRID_H_*/
+#endif /*_FDTD_STRUCTS_H_*/

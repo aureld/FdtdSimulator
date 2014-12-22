@@ -1,6 +1,6 @@
 //fdtd-alloc.h: memory allocation of the fields etc
 // Aurelien Duval 2014
-
+#pragma once 
 #ifndef _FDTD_ALLOC_H_
 #define _FDTD_ALLOC_H_
 

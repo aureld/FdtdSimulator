@@ -162,11 +162,12 @@
     <ClCompile Include="gridinit.c" />
     <ClCompile Include="ricker.c" />
     <ClCompile Include="snapshot.c" />
+    <ClCompile Include="stepping.c" />
     <ClCompile Include="update.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fdtd-alloc.h" />
-    <ClInclude Include="fdtd-grid.h" />
+    <ClInclude Include="fdtd-structs.h" />
     <ClInclude Include="fdtd-macros.h" />
     <ClInclude Include="fdtd-protos.h" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 //fdtd-protos.h: functions prototypes
 // Aurelien Duval 2014
 
+#pragma once
 #ifndef _FDTD_PROTOS_H_
 #define _FDTD_PROTOS_H_
 
@@ -40,5 +41,9 @@ void updateHy(Grid *g);
 void updateHz(Grid *g);
 void ezIncInit(Grid *g);
 float ezInc(int time, int location);
+
+void do_time_stepping(Grid *g, Snapshot *snapshots);
+float *field(Grid *g, FieldType f);
+
 
 #endif /*_FDTD_PROTOS_H_*/
