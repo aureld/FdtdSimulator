@@ -5,10 +5,12 @@
 #ifndef _FDTD_PROTOS_H_
 #define _FDTD_PROTOS_H_
 
+
 #include "fdtd-macros.h"
+#include "MovieLib.h"
 
 //prototypes
-void gridInit(Grid *g);
+void gridInit(Grid *g, int, int, int, int);
 void updateH(Grid *g);
 void updateE(Grid *g);
 void abcInit(Grid *g);
@@ -42,7 +44,7 @@ void updateHz(Grid *g);
 void ezIncInit(Grid *g);
 float ezInc(int time, int location);
 
-void do_time_stepping(Grid *g, Snapshot *snapshots);
+void do_time_stepping(Grid *g, Snapshot *snapshots, COW_MovieEngine *movie);
 float *field(Grid *g, FieldType f);
 
 

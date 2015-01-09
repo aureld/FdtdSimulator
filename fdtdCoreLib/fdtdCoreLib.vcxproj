@@ -109,7 +109,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Projects\FDTDsimC\libtiff-4.0.3\include;C:\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Projects\FDTDsimC\MovieLib;C:\Projects\FDTDsimC\libtiff-4.0.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
@@ -160,11 +160,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="gridinit.c" />
-    <ClCompile Include="ricker.c" />
-    <ClCompile Include="snapshot.c" />
-    <ClCompile Include="stepping.c" />
-    <ClCompile Include="update.c" />
+    <ClCompile Include="gridinit.cpp" />
+    <ClCompile Include="ricker.cpp" />
+    <ClCompile Include="snapshot.cpp" />
+    <ClCompile Include="stepping.cpp" />
+    <ClCompile Include="update.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fdtd-alloc.h" />

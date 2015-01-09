@@ -7,7 +7,7 @@
 #include "fdtd-protos.h"
 
 //initializes the grid
-void gridInit(Grid *g)
+void gridInit(Grid *g, int sizeX, int sizeY, int sizeZ, int maxtime)
 {
 	float imp0 = 377.0;				//cross impedance of free-space
 	int mm,nn,pp;
@@ -15,10 +15,10 @@ void gridInit(Grid *g)
 	float coefmul, coefdiv;
 	
 	g->type = threeDGrid;
-	g->sizeX = 128;							//fdtd domain size X
-	g->sizeY = 128;							//fdtd domain size Y
-	g->sizeZ = 128;							//fdtd domain size Z
-	g->maxTime = 200;						//simulation duration
+	g->sizeX = sizeX;							//fdtd domain size X
+	g->sizeY = sizeY;							//fdtd domain size Y
+	g->sizeZ = sizeZ;							//fdtd domain size Z
+	g->maxTime = maxtime;						//simulation duration
 	g->cdtds = (float)(1.0 / sqrt(3.0));			//courant number for 3D
 
 	//memory allocation

@@ -18,7 +18,6 @@
 #endif /* _MSC_VER */
 
 //types
-typedef enum { false, true } bool;
 typedef enum { XY, XZ, YZ } Orientation;
 typedef enum {F3D, PRINT, TIFFIMG} SnapshotType;
 typedef enum {EX, EY, EZ, HX, HY, HZ} FieldType;
@@ -46,7 +45,7 @@ typedef struct {
 } Snapshot;
 
 //Array macros
-#define idx(g,i,j,k) ((long)(i) * (g->sizeY) * (g->sizeZ) + (long)(j) * (g->sizeZ) + (long)(k))
+inline long idx(Grid *g, int i, int j, int k) { return ((long)(i)* (g->sizeY) * (g->sizeZ) + (long)(j)* (g->sizeZ) + (long)(k)); }
 #define idx2d(dim1,i,j) ((long)i()) * (dim1) + (long)(j))
 
 
