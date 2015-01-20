@@ -1,22 +1,48 @@
-set (FDTD_CORE_H
-        "fdtd-macros.h"
-        "fdtd-protos.h"
-        "fdtd-alloc.h"
-        "fdtd-structs.h")
-set (FDTD_CORE_CPP
-        "gridinit.cpp"
-        "ricker.cpp"
-        "snapshot.cpp"
-        "stepping.cpp"
-        "update.cpp")
+PROJECT(FDTDCoreLib CXX)
 
-source_group("header files" FILES ${FDTD_CORE_H})
-source_group("source files" FILES ${FDTD_CORE_CPP})
+SET(TARGET_LIB fdtdcorelib)
 
-include_directories(.)
+set (FDTDCORELIB_HEADERS
+        fdtd-macros.h
+        fdtd-protos.h
+        fdtd-alloc.h        
+        fdtd-structs.h
+)
 
-add_library(fdtdCoreLib STATIC  ${FDTD_CORE_H}
-                                ${FDTD_CORE_CPP})
+set (FDTDCORELIB_SRCS
+        ricker.cpp
+        gridinit.cpp
+        snapshot.cpp
+        stepping.cpp
+        update.cpp
+)
 
-set_property(TARGET fdtdCoreLib PROPERTY FOLDER "Libraries")
+# Dependent include files
+#INCLUDE_DIRECTORIES(${LIBTIFF_PUBLIC_HEADERS} ${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES("${LIFTIFF_SOURCE_DIR}/libtiff")
+INCLUDE_DIRECTORIES("${MOVIELIB_SOURCE_DIR}")
+INCLUDE_DIRECTORIES(${VTK_USE_FILE})
+
+IF(MSVC)
+        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Gy")
+        ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS -D_LIB)
+        SET(CMAKE_DEBUG_POSTFIX "d")
+ENDIF(MSVC)
+
+ADD_LIBRARY(${TARGET_LIB} STATIC ${FDTDCORELIB_SRCS} ${FDTDCORELIB_HEADERS})
+
+# Runtime equals DLL-files
+# Archive equals static libraries
+# Library equals module libraries
+IF(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
+        install(TARGETS ${TARGET_LIB}
+                RUNTIME DESTINATION ${EXECUTABLE_OUTPUT_PATH}
+                LIBRARY DESTINATION ${LIBRARY_OUTPUT_PATH}
+                ARCHIVE DESTINATION ${ARCHIVE_OUTPUT_PATH})
+ENDIF()
+IF(NOT SKIP_INSTALL_HEADERS AND NOT SKIP_INSTALL_ALL )
+        install(FILES ${FDTDCORELIB_HEADERS} DESTINATION ${INCLUDE_OUTPUT_PATH})
+ENDIF()
+
+
 

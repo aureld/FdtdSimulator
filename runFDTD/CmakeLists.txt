@@ -1,0 +1,3 @@
+add_executable (runFDTD runFDTD.cpp)
+
+target_link_libraries(runFDTD ${})
