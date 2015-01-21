@@ -15,7 +15,7 @@ SET(INCLUDE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/${dirname}/include")
 
 #Set directories
 #MODIFY IF NEEDED
-SET(LIB_SRC_PATH "C:/Projects/FDTDsimC/3rdParty/src")
+SET(LIB_SRC_PATH "/Users/aurel/code/fdtdsimc/3rdParty/src" CACHE PATH "Path where to find 3rd party libs")
 
 SET(ZLIB_SOURCE_DIR "${LIB_SRC_PATH}/zlib-1.2.8" CACHE PATH "Path where to find ZLIB source")
 #SET(LIBPNG_SOURCE_DIR CACHE PATH "Path where to find LIBPNG source")
@@ -28,7 +28,7 @@ SET(LIFTIFF_SOURCE_DIR "${LIB_SRC_PATH}/tiff-4.0.3" CACHE PATH "Path where to fi
 
 SET(MOVIELIB_SOURCE_DIR "${CMAKE_SOURCE_DIR}/MovieLib" CACHE PATH "Path where to find MovieLib source")
 
-SET(VTK_DIR "C:/Program Files/VTK/lib/cmake/vtk-6.2")
+#SET(VTK_DIR "C:/Program Files/VTK/lib/cmake/vtk-6.2")
 FIND_PACKAGE(VTK REQUIRED)
 INCLUDE(${VTK_USE_FILE})
 
