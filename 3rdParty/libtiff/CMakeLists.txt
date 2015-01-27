@@ -13,6 +13,12 @@ IF(MINGW)
 	SET(tiffconf "${CMAKE_CURRENT_SOURCE_DIR}/tiffconf.mingw.h")
 ENDIF()
 
+IF(APPLE)
+	SET(tif_config "${LIFTIFF_SOURCE_DIR}/libtiff/tif_config.h")
+	SET(tiffconf "${LIFTIFF_SOURCE_DIR}/libtiff/tiffconf.h")
+ENDIF()
+
+
 CONFIGURE_FILE(${tif_config} tif_config.h @ONLY)
 CONFIGURE_FILE(${tiffconf} tiffconf.h @ONLY)
 
@@ -36,6 +42,13 @@ SET(LIBTIFF_PRIVATE_HEADERS
 	${LIFTIFF_SOURCE_DIR}/libtiff/t4.h
 	${LIFTIFF_SOURCE_DIR}/libtiff/uvcode.h
 )
+
+IF(MSVC)
+	set(libtiff_win_src
+		${LIFTIFF_SOURCE_DIR}/libtiff/tif_win32.c
+)
+ENDIF(MSVC)
+
 SET(LIBTIFF_SRCS
 	${LIFTIFF_SOURCE_DIR}/libtiff/tif_aux.c
 	${LIFTIFF_SOURCE_DIR}/libtiff/tif_close.c
@@ -71,9 +84,9 @@ SET(LIBTIFF_SRCS
 	${LIFTIFF_SOURCE_DIR}/libtiff/tif_tile.c
 	${LIFTIFF_SOURCE_DIR}/libtiff/tif_version.c
 	${LIFTIFF_SOURCE_DIR}/libtiff/tif_warning.c
-	${LIFTIFF_SOURCE_DIR}/libtiff/tif_win32.c
 	${LIFTIFF_SOURCE_DIR}/libtiff/tif_write.c
 	${LIFTIFF_SOURCE_DIR}/libtiff/tif_zip.c
+	${libtiff_win_src}
 )
 
 # Dependent include files

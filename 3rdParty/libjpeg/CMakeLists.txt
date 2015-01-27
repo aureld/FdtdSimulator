@@ -10,6 +10,11 @@ IF (MINGW)
 	SET(jconfig "${LIBJPEG_SOURCE_DIR}/jconfig.vc")
 ENDIF()
 
+IF (APPLE)
+	SET(jconfig "${LIBJPEG_SOURCE_DIR}/jconfig.txt")
+ENDIF()
+
+
 CONFIGURE_FILE(${jconfig} jconfig.h @ONLY)
 
 SET(LIBJPEG_PUBLIC_HEADERS
