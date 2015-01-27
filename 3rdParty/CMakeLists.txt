@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 PROJECT(3rdPartyLibs)
 
@@ -35,25 +35,21 @@ ENDIF()
 
 SET(dirname "${COMPILER}-${BITS}")
 
-#Set directories
-#MODIFY IF NEEDED
-#SET(LIB_SRC_PATH "C:/Projects/FDTDsimC/3rdParty/src")
-
-
 SET(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/3rdParty/${dirname}/bin")
 SET(ARCHIVE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/3rdParty/${dirname}/lib")
 SET(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
 SET(INCLUDE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/3rdParty/${dirname}/include")
 
 
-#SET(ZLIB_SOURCE_DIR "${LIB_SRC_PATH}/zlib-1.2.8" CACHE PATH "Path where to find ZLIB source")
-#SET(LIBPNG_SOURCE_DIR CACHE PATH "Path where to find LIBPNG source")
-#SET(LIBJPEG_SOURCE_DIR "${LIB_SRC_PATH}/jpeg-9a" CACHE PATH "Path where to find LIBJPEG source")
-#SET(LIFTIFF_SOURCE_DIR "${LIB_SRC_PATH}/tiff-4.0.3" CACHE PATH "Path where to find LIBTIFF source")
+SET(ZLIB_SOURCE_DIR "C:\\Projects\\FDTDsimC\\3rdParty\\zlib\\src" CACHE PATH "Path where to find ZLIB source")
+SET(LIBJPEG_SOURCE_DIR "C:\\Projects\\FDTDsimC\\3rdParty\\libjpeg\\src" CACHE PATH "Path where to find LIBJPEG source")
+SET(LIFTIFF_SOURCE_DIR "C:\\Projects\\FDTDsimC\\3rdParty\\libtiff\\src" CACHE PATH "Path where to find LIBTIFF source")
 #SET(FREETYPE_SOURCE_DIR CACHE PATH "Path where to find FREETYPE source")
 #SET(GLUT_SOURCE_DIR CACHE PATH "Path where to find GLUT source")
 #SET(GIFLIB_SOURCE_DIR CACHE PATH "Path where to find GIFLIB source")
 #SET(MINIZIP_SOURCE_DIR CACHE PATH "Path where to find MINIZIP source")
+#SET(LIBPNG_SOURCE_DIR CACHE PATH "Path where to find LIBPNG source")
+
 
 # Check dependencies for LIBPNG
 IF (LIBPNG_SOURCE_DIR)

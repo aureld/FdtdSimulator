@@ -2,6 +2,7 @@ PROJECT(zlib C)
 
 SET(TARGET_LIB zlib)
 
+
 SET(ZLIB_VERSION "1.2.8")
 
 OPTION(ZLIB_USE_ASM686 "Enable building i686 assembly implementation" OFF)
