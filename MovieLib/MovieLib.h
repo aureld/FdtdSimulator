@@ -9,11 +9,6 @@
 #define _MOVIELIB_H_
 
 
-#ifdef MOVIELIB_EXPORTS
-#define MOVIELIB_API __declspec(dllexport)
-#else
-#define MOVIELIB_API __declspec(dllimport)
-#endif
 
 #include <string>
 
@@ -26,7 +21,7 @@ class vtkImageData;
 class vtkImageResize;
 
 // This class is exported from the OW_MovieEngineDLL.dll
-class MOVIELIB_API COW_MovieEngine {
+class COW_MovieEngine {
 public:
 	COW_MovieEngine();
 	~COW_MovieEngine();

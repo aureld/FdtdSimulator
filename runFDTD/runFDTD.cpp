@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	ALLOC_1D(g, 1, Grid);
 
 
-	gridInit(g, 3,3,3,100);
+	gridInit(g, 256,256,256,100);
 	ezIncInit(g);
 
 	COW_MovieEngine *movie = new COW_MovieEngine;
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 	
 
 	/* time stepping */
-	do_time_stepping(g, NULL, movie);
+	do_time_stepping(g, movie);
 
 	movie->EndMovie();
 	return 0;

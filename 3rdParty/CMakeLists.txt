@@ -2,48 +2,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 PROJECT(3rdPartyLibs)
 
-# Only enable release and debug builds
-IF(CMAKE_CONFIGURATION_TYPES)
-   SET(CMAKE_CONFIGURATION_TYPES Debug Release)
-   set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
-     "Reset the configurations to what we need"
-     FORCE)
-ENDIF()
 
-# Generate folder name for install
-IF(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-	SET(BITS "x64")
-ELSEIF (${CMAKE_SIZEOF_VOID_P} EQUAL 4)
-	SET(BITS "x86")
-ENDIF()
-
-IF (MSVC)
-	IF (${MSVC_VERSION} EQUAL 1600)
-		SET(COMPILER "v100")
-	ELSEIF (${MSVC_VERSION} EQUAL 1700)
-		SET(COMPILER "v110")
-	ELSEIF (${MSVC_VERSION} EQUAL 1800)
-		SET(COMPILER "v120")
-	ELSEIF (${MSVC_VERSION} EQUAL 1900)
-		SET(COMPILER "v130")
-	ENDIF()
-ENDIF()
-
-IF(MINGW)
-	SET(COMPILER "mingw")
-ENDIF()
-
-SET(dirname "${COMPILER}-${BITS}")
-
-SET(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/3rdParty/${dirname}/bin")
-SET(ARCHIVE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/3rdParty/${dirname}/lib")
-SET(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
-SET(INCLUDE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/3rdParty/${dirname}/include")
-
-
-SET(ZLIB_SOURCE_DIR "C:\\Projects\\FDTDsimC\\3rdParty\\zlib\\src" CACHE PATH "Path where to find ZLIB source")
-SET(LIBJPEG_SOURCE_DIR "C:\\Projects\\FDTDsimC\\3rdParty\\libjpeg\\src" CACHE PATH "Path where to find LIBJPEG source")
-SET(LIFTIFF_SOURCE_DIR "C:\\Projects\\FDTDsimC\\3rdParty\\libtiff\\src" CACHE PATH "Path where to find LIBTIFF source")
+#SET(ZLIB_SOURCE_DIR "${LIB_SRC_PATH}/zlib/src" CACHE PATH "Path where to find ZLIB source")
+#SET(LIBJPEG_SOURCE_DIR "${LIB_SRC_PATH}/libjpeg/src" CACHE PATH "Path where to find LIBJPEG source")
+#SET(LIFTIFF_SOURCE_DIR "${LIB_SRC_PATH}/libtiff/src" CACHE PATH "Path where to find LIBTIFF source")
 #SET(FREETYPE_SOURCE_DIR CACHE PATH "Path where to find FREETYPE source")
 #SET(GLUT_SOURCE_DIR CACHE PATH "Path where to find GLUT source")
 #SET(GIFLIB_SOURCE_DIR CACHE PATH "Path where to find GIFLIB source")

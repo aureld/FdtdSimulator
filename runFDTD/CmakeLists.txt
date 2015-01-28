@@ -1,9 +1,9 @@
 project(runFDTD CXX)
 
 INCLUDE_DIRECTORIES("${FDTDCORELIB_SOURCE_DIR}")
-INCLUDE_DIRECTORIES("${LIFTIFF_SOURCE_DIR}/libtiff")
 INCLUDE_DIRECTORIES("${MOVIELIB_SOURCE_DIR}")
 
-
-
 add_executable (runFDTD runFDTD.cpp)
+
+target_link_libraries(runFDTD MovieLib FDTDCoreLib ${VTK_LIBRARIES})
+

@@ -804,8 +804,7 @@ static	int32 find1span(unsigned char*, int32, int32);
  * table.  The ``base'' of the bit string is supplied
  * along with the start+end bit indices.
  */
-inline static int32
-find0span(unsigned char* bp, int32 bs, int32 be)
+static int32 find0span(unsigned char* bp, int32 bs, int32 be)
 {
 	int32 bits = be - bs;
 	int32 n, span;
@@ -863,8 +862,7 @@ find0span(unsigned char* bp, int32 bs, int32 be)
 	return (span);
 }
 
-inline static int32
-find1span(unsigned char* bp, int32 bs, int32 be)
+__inline static int32 find1span(unsigned char* bp, int32 bs, int32 be)
 {
 	int32 bits = be - bs;
 	int32 n, span;
