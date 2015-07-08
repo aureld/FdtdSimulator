@@ -1,4 +1,4 @@
-// fdtdCore.c : FDTD core engine in C
+// runFDTD.c : FDTD core engine in C
 // see http://www.eecs.wsu.edu/~schneidj
 // Aurelien Duval 2014
 
@@ -6,6 +6,7 @@
 #include "fdtd-alloc.h"
 #include "fdtd-macros.h"
 #include "fdtd-protos.h"
+#include "MovieLib.h"
 
 
 int main(int argc, char* argv[])
@@ -14,21 +15,17 @@ int main(int argc, char* argv[])
 	ALLOC_1D(g, 1, Grid);
 
 
-	gridInit(g, 256,256,256,100);
+	gridInit(g, 64,64,64,500);
 	ezIncInit(g);
 
-	COW_MovieEngine *movie = new COW_MovieEngine;
+	Movie *movie = new Movie();
 	movie->SetFileName("test.avi");
-	movie->SetFrameRate(30);
-	movie->SetOutputSize(g->sizeX, g->sizeY);
 	movie->Initialize(g->sizeX, g->sizeY);
-	movie->StartMovieFFMPEG();
+	movie->Start();
 	
-
 	/* time stepping */
 	do_time_stepping(g, movie);
-
-	movie->EndMovie();
+	movie->End();
 	return 0;
 
 }

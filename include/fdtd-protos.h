@@ -7,7 +7,10 @@
 
 
 #include "fdtd-macros.h"
-#include "MovieLib.h"
+
+
+//forward declarations
+class Movie;
 
 //prototypes
 void gridInit(Grid *g, int, int, int, int);
@@ -25,9 +28,9 @@ void updateEy(Grid *g);
 void updateEz(Grid *g);
 
 void ezIncInit(Grid *g);
-float ezInc(int time, int location);
+float ezInc(int time, double delay);
 
-void do_time_stepping(Grid *g,  COW_MovieEngine *movie);
+void do_time_stepping(Grid *g,  Movie *movie);
 float *field(Grid *g, FieldType f);
 
 

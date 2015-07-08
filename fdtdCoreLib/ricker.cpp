@@ -15,21 +15,23 @@ static double cdtds;
 void ezIncInit(Grid *g)
 {
 	cdtds = g->cdtds;
-	ppw = 20;
+	ppw = 10;
 }
 
 //calculates the input field at specified time and location
-float ezInc(int time, int location)
+float ezInc(int time, double delay = 0.0)
 {
-	double arg;
+	double val;
 
 	if (ppw <= 0) {
 		fprintf(stderr, "ricker: uninitialized input, ppw must be > 0.\n");
 		exit(-1);
 	}
 
-	arg = M_PI * ((cdtds * time - location) / ppw - 1.0);
-	arg = arg * arg;
+	double coef = M_PI * M_PI * (cdtds * time / ppw - delay) *  (cdtds * time / ppw - delay);
+	
+	val = (1.0 - 2.0 * coef) * exp(-coef);
 
-	return (float)((1.0 - 2.0 * arg) * exp(-arg));
+	return (float)val;
+
 }
