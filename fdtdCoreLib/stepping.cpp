@@ -50,7 +50,7 @@ float * field(Grid *g, FieldType f)
 {
 	switch (f)
 	{
-	case EX: return g->ex; break;
+    case EX: default: return g->ex; break;
 	case EY: return g->ey; break;
 	case EZ: return g->ez; break;
 	case HX: return g->hx; break;
@@ -73,9 +73,9 @@ void PrepareFrame(Grid *g, unsigned char * buf)
 			pos = 3 * (y * g->sizeX + x);
 			i = idx(g, x, y, g->sizeZ / 2);
 			double val = (g->ex[i] - mincolors) * normfact;
-			buf[pos] = red(val); //R
-			buf[pos + 1] = green(val); //G
-			buf[pos + 2] = blue(val); //B
+			buf[pos] =      (unsigned char) red(val); //R
+            buf[pos + 1] =  (unsigned char)green(val); //G
+            buf[pos + 2] =  (unsigned char)blue(val); //B
 		}
 }
 
