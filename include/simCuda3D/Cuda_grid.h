@@ -25,7 +25,7 @@ typedef struct _grid{
     float * Db2; // (dt/mu*delta2)
 
     //source arrays (1 source only for now)
-    float *srcField; //auxiliary array for the source amplitude vs time (precomputed)
+    float * srcField; //auxiliary array for the source amplitude vs time (precomputed)
     int srclinpos; //linear position of the source
     int srcposX; //indexed position of the source
     int srcposY;

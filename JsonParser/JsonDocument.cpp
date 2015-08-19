@@ -4,6 +4,7 @@
 #include "JsonParser/JsonDocument.h"
 #include "rapidJson/filewritestream.h"
 #include "rapidJson/prettywriter.h"
+#include "common_defs.h"
 
 
 //maps document names/values to fields in the grid structure
@@ -64,7 +65,7 @@ bool JsonDocument::WriteToGrid(grid *g)
     {
         const Value& a = doc["Ca"]; 
         assert(a.IsArray());
-        g->Ca = (float *)calloc(a.Size(), sizeof(float)); //on the spot allocation, should be done somewhere else so it's not too messy with CUDA stuff
+        g->Ca = (float *) cust_alloc(a.Size()*sizeof(float));
         for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
            g->Ca[i] = a[i].GetDouble();
     }
@@ -73,6 +74,67 @@ bool JsonDocument::WriteToGrid(grid *g)
         perror("[rapidJson]: Ca array not found!");
         return false;
     }
+
+    itr = doc.FindMember("Cb1");
+    if (itr != doc.MemberEnd())
+    {
+        const Value& a = doc["Cb1"];
+        assert(a.IsArray());
+        g->Cb1 = (float *)cust_alloc(a.Size()*sizeof(float));
+        for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
+            g->Cb1[i] = a[i].GetDouble();
+    }
+    else
+    {
+        perror("[rapidJson]: Cb1 array not found!");
+        return false;
+    }
+
+    itr = doc.FindMember("Cb2");
+    if (itr != doc.MemberEnd())
+    {
+        const Value& a = doc["Cb2"];
+        assert(a.IsArray());
+        g->Cb2 = (float *)cust_alloc(a.Size()*sizeof(float));
+        for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
+            g->Cb2[i] = a[i].GetDouble();
+    }
+    else
+    {
+        perror("[rapidJson]: Cb2 array not found!");
+        return false;
+    }
+
+    itr = doc.FindMember("Db1");
+    if (itr != doc.MemberEnd())
+    {
+        const Value& a = doc["Db1"];
+        assert(a.IsArray());
+        g->Db1 = (float *)cust_alloc(a.Size()*sizeof(float));
+        for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
+            g->Db1[i] = a[i].GetDouble();
+    }
+    else
+    {
+        perror("[rapidJson]: Db1 array not found!");
+        return false;
+    }
+
+    itr = doc.FindMember("Db2");
+    if (itr != doc.MemberEnd())
+    {
+        const Value& a = doc["Db2"];
+        assert(a.IsArray());
+        g->Db2 = (float *)cust_alloc(a.Size()*sizeof(float));
+        for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
+            g->Db2[i] = a[i].GetDouble();
+    }
+    else
+    {
+        perror("[rapidJson]: Db2 array not found!");
+        return false;
+    }
+
     return true;
 }
 
@@ -94,67 +156,83 @@ bool JsonDocument::WriteToDocument(FILE* f, grid *g)
     tmp.SetUint(g->layoutz); doc.AddMember("layoutz", tmp, allocator);
     tmp.SetInt(g->offset); doc.AddMember("offset", tmp, allocator);
     tmp.SetUint64(g->nt); doc.AddMember("nt", tmp, allocator);
+    tmp.SetDouble(g->dt); doc.AddMember("dt", tmp, allocator);
     tmp.SetDouble(g->dx); doc.AddMember("dx", tmp, allocator);
     tmp.SetDouble(g->dy); doc.AddMember("dy", tmp, allocator); 
     tmp.SetDouble(g->dz); doc.AddMember("dz", tmp, allocator);
     tmp.SetUint64(g->currentIteration); doc.AddMember("currentIteration", tmp, allocator);
+ 
+    Value val;
+    val.SetObject();
+    Value src;
+    src.SetUint(g->srclinpos); val.AddMember("srclinpos", src, allocator);
+    src.SetUint(g->srcposX); val.AddMember("srcposX", src, allocator);
+    src.SetUint(g->srcposY); val.AddMember("srcposY", src, allocator);
+    src.SetUint(g->srcposZ); val.AddMember("srcposZ", src, allocator);
+    src.SetUint(g->srcFieldComp); val.AddMember("srcFieldComp", src, allocator);
+    src.SetDouble(g->amplitude); val.AddMember("amplitude", src, allocator);
+    src.SetDouble(g->omega); val.AddMember("omega", src, allocator);
+    src.SetDouble(g->rTime); val.AddMember("rTime", src, allocator);
+    src.SetDouble(g->initPhase); val.AddMember("initPhase", src, allocator);
+    doc.AddMember("Source", val, allocator);
 
+    val.SetObject();
+    Value det;
+    det.SetUint(g->detX); val.AddMember("detX", det, allocator);
+    det.SetUint(g->detY); val.AddMember("detY", det, allocator);
+    det.SetUint(g->detZ); val.AddMember("detZ", det, allocator);
+    det.SetUint(g->detComps); val.AddMember("detComps", det, allocator);
+    doc.AddMember("Detector", val, allocator);
+
+    assert(g->Ca != NULL);
     tmp.SetArray();
     for (unsigned int i = 0; i < g->domainSize; i++)
-        tmp[i].SetDouble(g->Ca[i]);
+    {
+        val.SetDouble(g->Ca[i]);
+        tmp.PushBack(val, doc.GetAllocator());
+    }
     doc.AddMember("Ca", tmp, allocator);
+
+    assert(g->Cb1 != NULL);
+    tmp.SetArray();
+    for (unsigned int i = 0; i < g->domainSize; i++)
+    {
+        val.SetDouble(g->Cb1[i]);
+        tmp.PushBack(val, doc.GetAllocator());
+    }
+    doc.AddMember("Cb1", tmp, allocator);
+
+    assert(g->Cb2 != NULL);
+    tmp.SetArray();
+    for (unsigned int i = 0; i < g->domainSize; i++)
+    {
+        val.SetDouble(g->Cb2[i]);
+        tmp.PushBack(val, doc.GetAllocator());
+    }
+    doc.AddMember("Cb2", tmp, allocator);
+
+    assert(g->Db1 != NULL);
+    tmp.SetArray();
+    for (unsigned int i = 0; i < g->domainSize; i++)
+    {
+        val.SetDouble(g->Db1[i]);
+        tmp.PushBack(val, doc.GetAllocator());
+    }
+    doc.AddMember("Db1", tmp, allocator);
+
+    assert(g->Db2 != NULL);
+    tmp.SetArray();
+    for (unsigned int i = 0; i < g->domainSize; i++)
+    {
+        val.SetDouble(g->Db2[i]);
+        tmp.PushBack(val, doc.GetAllocator());
+    }
+    doc.AddMember("Db2", tmp, allocator);
 
     FileWriteStream os(f, writeBuffer, sizeof(writeBuffer));
     Writer<FileWriteStream> writer(os);
     doc.Accept(writer);
 
     return true;
-  /*
-    writer.Key("Source");
-    writer.StartObject();
-    writer.Key("srclinpos"); writer.Uint(g->srclinpos);
-    writer.Key("srcposX"); writer.Uint(g->srcposX);
-    writer.Key("srcposY"); writer.Uint(g->srcposY);
-    writer.Key("srcposZ"); writer.Uint(g->srcposZ);
-    writer.Key("srcFieldComp"); writer.Uint(g->srcFieldComp);
-    writer.Key("amplitude"); writer.Double(g->amplitude);
-    writer.Key("omega"); writer.Double(g->omega);
-    writer.Key("rTime"); writer.Double(g->rTime);
-    writer.Key("initPhase"); writer.Double(g->initPhase);
-    writer.EndObject();
-    writer.Key("Detector");
-    writer.StartObject();
-    writer.Key("detX"); writer.Uint(g->detX);
-    writer.Key("detY"); writer.Uint(g->detY);
-    writer.Key("detZ"); writer.Uint(g->detZ);
-    writer.Key("detComps"); writer.Uint(g->detComps);
-    writer.EndObject();
-    writer.Key("Ca");
-    writer.StartArray();
-    for (unsigned i = 0; i < g->domainSize; i++)
-        writer.Double(g->Ca[i]);
-    writer.EndArray();
-    writer.Key("Cb1");
-    writer.StartArray();
-    for (unsigned i = 0; i < g->domainSize; i++)
-        writer.Double(g->Cb1[i]);
-    writer.EndArray();
-    writer.Key("Cb2");
-    writer.StartArray();
-    for (unsigned i = 0; i < g->domainSize; i++)
-        writer.Double(g->Cb2[i]);
-    writer.EndArray();
-    writer.Key("Db1");
-    writer.StartArray();
-    for (unsigned i = 0; i < g->domainSize; i++)
-        writer.Double(g->Db1[i]);
-    writer.EndArray();
-    writer.Key("Db2");
-    writer.StartArray();
-    for (unsigned i = 0; i < g->domainSize; i++)
-        writer.Double(g->Db2[i]);
-    writer.EndArray();
-    writer.EndObject();
-    myfile << s.GetString() << endl;
-    myfile.close(); */
+
 }

@@ -8,22 +8,36 @@
 #include "gtest/gtest.h"
 #include <process.h>
 
-TEST(JsonParserTester, CompareFiles)
-{
+
+class JsonParserTester : public ::testing::Test {
+protected:
+    virtual void SetUp()
+    {
+        g = new grid();
+        d = new JsonDocument();
+        fio = new FileIO();
+        parser = new JsonParser(d, fio);
+    }
+
     grid *g;
-    g = (grid*)calloc(1, sizeof(grid));
+    JsonParser *parser;
+    IJsonDocument *d;
+    IFileIO *fio;
+    FILE * test_file;
+    double tolerance;
+};
 
 
-    JsonDocument *doc = new JsonDocument();
-    FileIO *fio = new FileIO();
-    JsonParser *parser = new JsonParser(doc, fio);
-    //we run the parser in and out 
-    parser->ParseJsonFile("ValidTestJson.txt", g);
-    parser->ExportToJson("ExportedTestJson.txt", g);
-
+TEST_F(JsonParserTester, CompareFiles)
+{
     std::string path = "C:\\code\\fdtdSimC\\build\\x64\\bin\\";
     std::string param1 = path + "ValidTestJson.txt";
     std::string param2 = path + "ExportedTestJson.txt";
+
+    //we run the parser in and out 
+    parser->ParseJsonFile(param1.c_str(), g);
+    parser->ExportToJson(param2.c_str(), g);
+
 
     //we compare the input and output files.
     //we might run into troubles when comparing double outputs or arrays... to be improved

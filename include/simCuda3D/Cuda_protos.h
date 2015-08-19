@@ -11,10 +11,10 @@
 
 __global__ void Cuda_CalculateStep(grid *g);
 __global__ void Cuda_initFieldArrays(grid *g);
-__global__ void Cuda_InitializeSrc(grid *g);
+//__global__ void Cuda_InitializeSrc(grid *g);
 
 
-__global__ void Cuda_CollectTimeSeriesData(float *component, float *field, int posx, int posy, int posz, __int64 timestep, grid *g);
+//__global__ void Cuda_CollectTimeSeriesData(float *component, float *field, int posx, int posy, int posz, __int64 timestep, grid *g);
 
 
 //device functions

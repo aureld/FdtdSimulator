@@ -5,90 +5,10 @@
 #include <stdio.h>
 #include "cuda_runtime.h"
 #include "SimCuda3D/cuda_macros.h"
+#include "simCuda3D/Cuda_symbols.h"
 #include "SimCuda3D/cuda_protos.h"
 #include "SimCuda3D/Cuda_grid.h"
 #include <math.h>
-
-//array indexing macros
-#define IDX(i, j, k) ((i) + (j) * (g->nx) + (k) * (g->nx) * (g->ny) )
-#define K(index) (index / (g->nx * g->ny))
-#define J(index) ((index - (K(index)*g->nx*g->ny))/g->nx)
-#define I(index) ((index) - J(index) * g->nx - K(index) * g->nx * g->ny)
-
-
-
-//initialize all device field arrays to zero before use (Seems there's no 
-__global__ void Cuda_initFieldArrays( grid *g)
-{
-    //grid stride loop
-    for (int index = blockIdx.x * blockDim.x + threadIdx.x; index < g->domainSize; index += blockDim.x * gridDim.x)
-    {
-        g->ex[index] = 0.0;  
-        g->ey[index] = 0.0; 
-        g->ez[index] = 0.0; 
-        g->hx[index] = 0.0; 
-        g->hy[index] = 0.0; 
-        g->hz[index] = 0.0; 
-        g->Ca[index] = 0.0;
-        g->Cb1[index] = 0.0;
-        g->Cb2[index] = 0.0;
-        g->Db1[index] = 0.0;
-        g->Db2[index] = 0.0;
-    }
-}
-
-
-//update equations for H fields - Cuda naive approach
-__device__ void Cuda_updateH(grid *g)
-{
-    int i, j, k, pos;
-
-    //grid stride loop
-    for (int index = blockIdx.x * blockDim.x + threadIdx.x; index < g->domainSize; index += blockDim.x * gridDim.x)
-    {
-        i = I(index);
-        j = J(index);
-        k = K(index);
-        pos = IDX(i, j, k);
-
-        if (i > g->nx-1  || j > g->ny-1 || k > g->nz-1) return;
-        if (i <= 1 || j <= 1 || k <= 1) return;
-
-        Cuda_updateHComponent(0, g->hx, i, j, k, pos, g);
-        Cuda_updateHComponent(1, g->hy, i, j, k, pos, g);
-        Cuda_updateHComponent(2, g->hz, i, j, k, pos, g);
-
-    }
-
-    return;
-}
-
-__device__ inline void Cuda_updateHComponent(int component, float *h, int i, int j, int k, int pos, grid *g)
-{
-    float e1a, e1b, e2a, e2b;
-    switch (component)
-    {
-    case 0: //X
-        e1a = g->ey[pos];
-        e1b = g->ey[IDX(i, j, k - 1)];
-        e2a = g->ez[pos];
-        e2b = g->ez[IDX(i, j - 1, k)];
-        break;
-    case 1: //Y
-        e1a = g->ez[pos];
-        e1b = g->ez[IDX(i - 1, j, k)];
-        e2a = g->ex[pos];
-        e2b = g->ex[IDX(i, j, k - 1)];
-        break;
-    case 2: //Z
-        e1a = g->ex[pos];
-        e1b = g->ex[IDX(i, j - 1, k)];
-        e2a = g->ey[pos];
-        e2b = g->ey[IDX(i - 1, j, k)];
-        break;
-    }
-    h[pos] = h[pos] + g->Db1[pos] * (e1a - e1b) - g->Db2[pos] * (e2a - e2b);
-}
 
 
 __device__ void Cuda_updateHBoundaries(grid *g)
@@ -334,7 +254,7 @@ __device__ inline void Cuda_updateHBoundaryPlusZ(int i, int j, int k, int pos, g
 
 
 //Auxiliary source array initialization  
-__global__ void Cuda_InitializeSrc(grid *g)
+/*__global__ void Cuda_InitializeSrc(grid *g)
 {
     //grid stride loop
     for (unsigned __int64 index = blockIdx.x * blockDim.x + threadIdx.x; index < g->nt; index += blockDim.x * gridDim.x)
@@ -347,6 +267,7 @@ __global__ void Cuda_InitializeSrc(grid *g)
     }
     return;
 }
+*/
 
 //E field injection
 //for single a point source, only 1 thread should be launched 
@@ -377,21 +298,10 @@ __device__ void Cuda_injectE(grid *g)
     field[g->srclinpos] += g->srcField[g->currentIteration];
 }
 
+
 //collect field data for select component and store in detector array for each timestep
-__global__ void Cuda_CollectTimeSeriesData(float *component, float *field, int posx, int posy, int posz, __int64 timestep, grid *g)
-{
-    int pos = IDX(posx, posy, posz);
-    component[timestep] = field[pos];
-}
-
-
-//whole step done on device
-__global__ void Cuda_CalculateStep(grid *g)
-{
-    Cuda_updateE(g);
-    Cuda_injectE(g);
-    Cuda_updateEBoundaries(g);
-    Cuda_updateH(g);
-    Cuda_updateHBoundaries(g);
-
-}
+//__global__ void Cuda_CollectTimeSeriesData(float *component, float *field, int posx, int posy, int posz, __int64 timestep, grid *g)
+//{
+//   int pos = IDX(posx, posy, posz);
+//    component[timestep] = field[pos];
+//}

@@ -6,6 +6,7 @@
 
 #include <vector>
 #include "SimCuda3D/Cuda_grid.h"
+#include "cuda_runtime.h"
 
 #pragma warning(disable : 4201)
 
@@ -24,17 +25,22 @@ union FieldComps
     unsigned __int8 comps;
 };
 
+void* AllocateAndCopyToDevice(void *h_data, unsigned int memsize);
+
+__global__ void Cuda_updateH(float *ex, float *ey, float *ez, float *hx, float *hy, float *hz, float *Db1, float *Db2);
+__device__ inline void Cuda_updateHComponent(int component, float *h, int i, int j, int k, int pos, float *ex, float *ey, float *ez, float *Db1,float *Db2);
 
 
-//creates a pointer in unified memory to the grid
-grid *CudaInitGrid();
+
+//creates a pointer in device memory for the grid
+bool CudaInitGrid(grid *g, grid *dg);
 
 //initializes the host and device memory chunks for simulation
-void CudaInitFields(grid *g);
+bool CudaInitFields(grid *g, grid *dg);
 
 //Initialize the E source auxiliary array
 //srcField: 0-> Ex, 1->Ey, 2->Ez
-void CudaInitializeSourceE(grid *g);
+//void CudaInitializeSourceE(grid *g);
 
 //initialization of the point detector time series data
 //nbTimeSteps: total number of timesteps
@@ -55,7 +61,7 @@ bool CudaCalculateStep(grid *g);
 
 
 //Collect time series data for the current point detector
-bool CudaCollectTimeSeriesData(__int64 timestep, int detX, int detY, int detZ, grid *g);
+//bool CudaCollectTimeSeriesData(__int64 timestep, int detX, int detY, int detZ, grid *g);
 
 //writes the time series data to file
 bool CudaWriteTimeSeriesData(char* filename, grid *g);

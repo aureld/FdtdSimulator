@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{750EFE83-ED57-4AE3-95CD-40CD0CE21B3B}</ProjectGuid>
     <RootNamespace>RapidJsonTest</RootNamespace>
-    <ProjectName>JsonParserTest</ProjectName>
+    <ProjectName>testSuite</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -67,7 +67,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>../../build/x64/bin/</OutDir>
+    <OutDir>$(SolutionDir)x64\bin</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,7 +96,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\code\fdtdSimC\build\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gmockd.lib;gmock_maind.lib;JsonParserD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SimCuda3D.lib;gmockd.lib;gmock_maind.lib;JsonParserD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -138,6 +138,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MockJsonDocument.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\JsonParser\JSonParser.vcxproj">
+      <Project>{dcc57a60-0060-43e7-ae8a-227e850414f1}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SimCuda3D\SimCuda3D.vcxproj">
+      <Project>{72a605f3-caee-4a17-bea7-d1feaed461a3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

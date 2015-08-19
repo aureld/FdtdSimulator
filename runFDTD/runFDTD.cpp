@@ -28,7 +28,6 @@ int main()
     JsonParser *parser = new JsonParser(doc, fio);
     parser->ParseJsonFile("C:\\code\\fdtdSimC\\build\\x64\\bin\\ValidTestJson.txt", g);
 
-    parser->ExportToJson("C:\\code\\fdtdSimC\\build\\x64\\bin\\ExportedTestJson.txt", g);
     return 0;
 }
 

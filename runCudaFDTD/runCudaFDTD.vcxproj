@@ -71,8 +71,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\code\fdtdSimC\include;$(IncludePath)</IncludePath>
-    <OutDir>C:\code\fdtdSimC\build\x64\bin\</OutDir>
+    <IncludePath>..\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)x64\bin\</OutDir>
     <IntDir>C:\code\fdtdSimC\build\runCudaFDTD.dir\Debug\</IntDir>
     <TargetName>runCudaFDTD</TargetName>
   </PropertyGroup>
@@ -104,7 +104,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>JsonParserD.lib;cudart.lib;MovieLibd.lib;SimCuda3D.lib;C:\Program Files\VTK\lib\vtkImagingCore-6.2.lib;C:\Program Files\VTK\lib\vtkIOImage-6.2.lib;C:\Program Files\VTK\lib\vtkDICOMParser-6.2.lib;C:\Program Files\VTK\lib\vtkmetaio-6.2.lib;C:\Program Files\VTK\lib\vtkpng-6.2.lib;C:\Program Files\VTK\lib\vtktiff-6.2.lib;C:\Program Files\VTK\lib\vtkjpeg-6.2.lib;C:\Program Files\VTK\lib\vtkIOFFMPEG-6.2.lib;C:\Program Files\VTK\lib\vtkIOMovie-6.2.lib;C:\Program Files\VTK\lib\vtkIOCore-6.2.lib;C:\Program Files\VTK\lib\vtkCommonExecutionModel-6.2.lib;C:\Program Files\VTK\lib\vtkCommonDataModel-6.2.lib;C:\Program Files\VTK\lib\vtkCommonMisc-6.2.lib;C:\Program Files\VTK\lib\vtkCommonSystem-6.2.lib;C:\Program Files\VTK\lib\vtksys-6.2.lib;C:\Program Files\VTK\lib\vtkCommonTransforms-6.2.lib;C:\Program Files\VTK\lib\vtkCommonMath-6.2.lib;C:\Program Files\VTK\lib\vtkCommonCore-6.2.lib;C:\Program Files\VTK\lib\vtkzlib-6.2.lib;C:\Program Files\VTK\lib\vtkoggtheora-6.2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>JsonParserD.lib;cudart.lib;SimCuda3D.lib;C:\Program Files\VTK\lib\vtkImagingCore-6.2.lib;C:\Program Files\VTK\lib\vtkIOImage-6.2.lib;C:\Program Files\VTK\lib\vtkDICOMParser-6.2.lib;C:\Program Files\VTK\lib\vtkmetaio-6.2.lib;C:\Program Files\VTK\lib\vtkpng-6.2.lib;C:\Program Files\VTK\lib\vtktiff-6.2.lib;C:\Program Files\VTK\lib\vtkjpeg-6.2.lib;C:\Program Files\VTK\lib\vtkIOFFMPEG-6.2.lib;C:\Program Files\VTK\lib\vtkIOMovie-6.2.lib;C:\Program Files\VTK\lib\vtkIOCore-6.2.lib;C:\Program Files\VTK\lib\vtkCommonExecutionModel-6.2.lib;C:\Program Files\VTK\lib\vtkCommonDataModel-6.2.lib;C:\Program Files\VTK\lib\vtkCommonMisc-6.2.lib;C:\Program Files\VTK\lib\vtkCommonSystem-6.2.lib;C:\Program Files\VTK\lib\vtksys-6.2.lib;C:\Program Files\VTK\lib\vtkCommonTransforms-6.2.lib;C:\Program Files\VTK\lib\vtkCommonMath-6.2.lib;C:\Program Files\VTK\lib\vtkCommonCore-6.2.lib;C:\Program Files\VTK\lib\vtkzlib-6.2.lib;C:\Program Files\VTK\lib\vtkoggtheora-6.2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:/code/fdtdSimC/build/x64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -113,11 +113,15 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_35,sm_35</CodeGeneration>
+      <CodeGeneration>compute_52,sm_52</CodeGeneration>
       <Include>$(ProjectDir)\..\include;%(Include)</Include>
+      <Runtime>MTd</Runtime>
+      <Defines>_CRT_SECURE_NO_WARNINGS</Defines>
+      <GenerateLineInfo>true</GenerateLineInfo>
     </CudaCompile>
     <CudaLink>
       <AdditionalLibraryDirectories>C:/code/fdtdSimC/build/x64/lib</AdditionalLibraryDirectories>
+      <GPUDebugInfo>true</GPUDebugInfo>
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -167,9 +171,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="runFDTD.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\build\MovieLib\MovieLib.vcxproj">
-      <Project>{a4b47e28-8e30-4b60-bb29-84e0753b7f8b}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\SimCuda3D\SimCuda3D.vcxproj">
       <Project>{72a605f3-caee-4a17-bea7-d1feaed461a3}</Project>
     </ProjectReference>
