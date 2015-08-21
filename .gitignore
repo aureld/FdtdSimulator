@@ -4,3 +4,20 @@
 *.filters
 
 bin/
+test.txt
+test.vtk
+vtktest.vtk
+build/
+integrationTest/JsonParserTester/Win32/
+integrationTest/JsonParserTester/x64/
+test/CudaTestSuite/x64/
+test/RectMesh2d.xdmf
+test/testSuite/x64/
+runCudaFDTD/Debug/
+runCudaFDTD/runCudaFDTD.dir/
+runCudaFDTD/testCuda.avi
+runCudaFDTD/x64/
+MovieLib/x64/
+JsonParser/x64/
+SimCuda3D/x64/
+SimCuda3D/Activity2.nvact

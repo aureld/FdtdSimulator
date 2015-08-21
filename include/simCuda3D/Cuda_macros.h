@@ -5,11 +5,9 @@
 #ifndef _CUDA_MACROS_H_
 #define _CUDA_MACROS_H_
 
- 
 #include <stdlib.h>
 #include <stdio.h>
 #include "cuda_runtime.h"
-#include <Windows.h>
 
 #define CDTDS 0.57735026918962576450914878050196 // 1/sqrt(3)
 
@@ -45,6 +43,8 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort =
     }
 }
 
+#pragma warning(disable : 4127) // the if () is evaluted as constant by VS compiler
+
 #  define CUDA_SAFE_CALL( call) do {                                         \
     CUDA_CHECK(call);                                                        \
     cudaError err = cudaThreadSynchronize();                                 \
@@ -53,8 +53,5 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort =
                 __FILE__, __LINE__, cudaGetErrorString( err) );              \
         exit(EXIT_FAILURE);                                                  \
         } } while (0)
-
-
-
 
 #endif /*_CUDA_MACROS_H_*/

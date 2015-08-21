@@ -6,7 +6,6 @@
 #ifndef _COMMON_DEFS_H
 #define _COMMON_DEFS_H
 
-#include <stdlib.h>
 #include <stdio.h>
 #include <Windows.h>
 

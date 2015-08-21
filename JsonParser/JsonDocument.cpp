@@ -43,7 +43,7 @@ bool JsonDocument::WriteToGrid(grid *g)
     }
     else
     {
-        perror("[rapidJson]: No source defined!");
+        perror("[JsonParser]: No source defined!");
         return false;
     }
     itr = doc.FindMember("Detector");
@@ -56,7 +56,22 @@ bool JsonDocument::WriteToGrid(grid *g)
     }
     else
     {
-        perror("[rapidJson]: No detector defined!");
+        perror("[JsonParser]: No detector defined!");
+        return false;
+    }
+
+    itr = doc.FindMember("mat");
+    if (itr != doc.MemberEnd())
+    {
+        const Value& a = doc["mat"];
+        assert(a.IsArray());
+        g->mat = (unsigned int *)cust_alloc(a.Size()*sizeof(unsigned int));
+        for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
+            g->mat[i] = a[i].GetUint();
+    }
+    else
+    {
+        perror("[JsonParser]: Ca array not found!");
         return false;
     }
 
@@ -71,7 +86,7 @@ bool JsonDocument::WriteToGrid(grid *g)
     }
     else
     {
-        perror("[rapidJson]: Ca array not found!");
+        perror("[JsonParser]: Ca array not found!");
         return false;
     }
 
@@ -86,7 +101,7 @@ bool JsonDocument::WriteToGrid(grid *g)
     }
     else
     {
-        perror("[rapidJson]: Cb1 array not found!");
+        perror("[JsonParser]: Cb1 array not found!");
         return false;
     }
 
@@ -101,7 +116,7 @@ bool JsonDocument::WriteToGrid(grid *g)
     }
     else
     {
-        perror("[rapidJson]: Cb2 array not found!");
+        perror("[JsonParser]: Cb2 array not found!");
         return false;
     }
 
@@ -116,7 +131,7 @@ bool JsonDocument::WriteToGrid(grid *g)
     }
     else
     {
-        perror("[rapidJson]: Db1 array not found!");
+        perror("[JsonParser]: Db1 array not found!");
         return false;
     }
 
@@ -131,7 +146,7 @@ bool JsonDocument::WriteToGrid(grid *g)
     }
     else
     {
-        perror("[rapidJson]: Db2 array not found!");
+        perror("[JsonParser]: Db2 array not found!");
         return false;
     }
 
@@ -162,6 +177,7 @@ bool JsonDocument::WriteToDocument(FILE* f, grid *g)
     tmp.SetDouble(g->dz); doc.AddMember("dz", tmp, allocator);
     tmp.SetUint64(g->currentIteration); doc.AddMember("currentIteration", tmp, allocator);
  
+
     Value val;
     val.SetObject();
     Value src;
@@ -183,6 +199,16 @@ bool JsonDocument::WriteToDocument(FILE* f, grid *g)
     det.SetUint(g->detZ); val.AddMember("detZ", det, allocator);
     det.SetUint(g->detComps); val.AddMember("detComps", det, allocator);
     doc.AddMember("Detector", val, allocator);
+
+    assert(g->mat != NULL);
+    tmp.SetArray();
+    for (unsigned int i = 0; i < g->domainSize; i++)
+    {
+        val.SetUint(g->mat[i]);
+        tmp.PushBack(val, doc.GetAllocator());
+    }
+    doc.AddMember("mat", tmp, allocator);
+
 
     assert(g->Ca != NULL);
     tmp.SetArray();

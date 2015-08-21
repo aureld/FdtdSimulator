@@ -1,0 +1,54 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{D1034D59-56FC-4AA3-ABD1-823726D17732}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "runCudaFDTD", "runCudaFDTD\runCudaFDTD.vcxproj", "{20AB4872-1952-4FC1-8301-C230AAE8EC85}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimCuda3D", "SimCuda3D\SimCuda3D.vcxproj", "{72A605F3-CAEE-4A17-BEA7-D1FEAED461A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{820CE014-9B03-42B0-A860-7B07E5C7126D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JsonParser", "JsonParser\JSonParser.vcxproj", "{DCC57A60-0060-43E7-AE8A-227E850414F1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CudaTestSuite", "test\CudaTestSuite\CudaTestSuite.vcxproj", "{C6574B9D-D1A2-49F9-9BD9-47E559E34209}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MovieLib", "MovieLib\MovieLib.vcxproj", "{0FE15EA9-0733-46D4-A3D9-1F6C6FEF16CD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20AB4872-1952-4FC1-8301-C230AAE8EC85}.Debug|x64.ActiveCfg = Debug|x64
+		{20AB4872-1952-4FC1-8301-C230AAE8EC85}.Debug|x64.Build.0 = Debug|x64
+		{20AB4872-1952-4FC1-8301-C230AAE8EC85}.Release|x64.ActiveCfg = Release|x64
+		{20AB4872-1952-4FC1-8301-C230AAE8EC85}.Release|x64.Build.0 = Release|x64
+		{72A605F3-CAEE-4A17-BEA7-D1FEAED461A3}.Debug|x64.ActiveCfg = Debug|x64
+		{72A605F3-CAEE-4A17-BEA7-D1FEAED461A3}.Debug|x64.Build.0 = Debug|x64
+		{72A605F3-CAEE-4A17-BEA7-D1FEAED461A3}.Release|x64.ActiveCfg = Release|x64
+		{72A605F3-CAEE-4A17-BEA7-D1FEAED461A3}.Release|x64.Build.0 = Release|x64
+		{DCC57A60-0060-43E7-AE8A-227E850414F1}.Debug|x64.ActiveCfg = Debug|x64
+		{DCC57A60-0060-43E7-AE8A-227E850414F1}.Debug|x64.Build.0 = Debug|x64
+		{DCC57A60-0060-43E7-AE8A-227E850414F1}.Release|x64.ActiveCfg = Release|x64
+		{DCC57A60-0060-43E7-AE8A-227E850414F1}.Release|x64.Build.0 = Release|x64
+		{C6574B9D-D1A2-49F9-9BD9-47E559E34209}.Debug|x64.ActiveCfg = Debug|x64
+		{C6574B9D-D1A2-49F9-9BD9-47E559E34209}.Debug|x64.Build.0 = Debug|x64
+		{C6574B9D-D1A2-49F9-9BD9-47E559E34209}.Release|x64.ActiveCfg = Release|x64
+		{0FE15EA9-0733-46D4-A3D9-1F6C6FEF16CD}.Debug|x64.ActiveCfg = Debug|x64
+		{0FE15EA9-0733-46D4-A3D9-1F6C6FEF16CD}.Debug|x64.Build.0 = Debug|x64
+		{0FE15EA9-0733-46D4-A3D9-1F6C6FEF16CD}.Release|x64.ActiveCfg = Release|x64
+		{0FE15EA9-0733-46D4-A3D9-1F6C6FEF16CD}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{72A605F3-CAEE-4A17-BEA7-D1FEAED461A3} = {D1034D59-56FC-4AA3-ABD1-823726D17732}
+		{DCC57A60-0060-43E7-AE8A-227E850414F1} = {D1034D59-56FC-4AA3-ABD1-823726D17732}
+		{C6574B9D-D1A2-49F9-9BD9-47E559E34209} = {820CE014-9B03-42B0-A860-7B07E5C7126D}
+		{0FE15EA9-0733-46D4-A3D9-1F6C6FEF16CD} = {D1034D59-56FC-4AA3-ABD1-823726D17732}
+	EndGlobalSection
+EndGlobal

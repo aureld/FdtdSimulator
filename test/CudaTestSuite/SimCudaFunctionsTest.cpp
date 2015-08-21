@@ -6,6 +6,7 @@
 #include "simCuda3D/Cuda_grid.h"
 #include "simCuda3D/Cuda_macros.h"
 #include "simCuda3D/SimCudaFunctions.h"
+#include "simCuda3D\Cuda_memory.h"
 #include "common_defs.h"
 
 
