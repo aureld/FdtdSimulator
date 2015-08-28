@@ -29,6 +29,7 @@
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\simCuda3D\Cuda_constantMemoryData.h" />
     <ClInclude Include="..\include\simCuda3D\Cuda_memory.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -72,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetExt>.lib</TargetExt>
-    <OutDir>C:\code\fdtdSimC\build\x64\lib\</OutDir>
+    <OutDir>..\build\x64\lib\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
     <IncludePath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.0\include;$(IncludePath)</IncludePath>
     <IntDir>C:\code\fdtdSimC\build\SimCuda3D.dir\Debug\</IntDir>
@@ -80,13 +81,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetExt>.lib</TargetExt>
-    <OutDir>C:\code\fdtdSimC\build\x64\lib\</OutDir>
+    <OutDir>..\build\x64\lib\</OutDir>
     <TargetName>$(ProjectName)D</TargetName>
     <IncludePath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.0\include;$(IncludePath)</IncludePath>
-    <OutDir>C:\code\fdtdSimC\build\x64\lib\</OutDir>
+    <OutDir>..\build\x64\lib\</OutDir>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -114,6 +115,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <Include>..\Include;%(Include)</Include>
       <Runtime>MTd</Runtime>
       <GenerateLineInfo>true</GenerateLineInfo>
+      <PtxAsOptionV>true</PtxAsOptionV>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">

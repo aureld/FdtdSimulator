@@ -9,7 +9,6 @@
 #include "JsonParser/JsonDocument.h"
 #include "JsonParser/FileIO.h"
 #include "Movielib/MovieLib.h"
-#include "common_defs.h"
 #include <time.h>
 
 using namespace std;
@@ -48,21 +47,15 @@ void main()
         perror("Cuda grid initialization error.");
         exit(-1);
     }
-    if (CudaInitFields(g, dg) == false)
-    {
-        perror("Cuda fields initialization error.");
-        exit(-1);
-    }
-
+    
     //DEBUG - SHOW source field
     //CudaWriteTimeSeriesData("srcEx.f2d", g->srcField, g->nt);
 
-    unsigned char *buf = new unsigned char[g->nx * g->ny * 3];
+    unsigned char *buf = new unsigned char[g->nx * g->ny * 3]; //for Movie, RGB colors so 3 values per point
     //create the movie
     if (MOVIE)
     {
         movie = new Movie();
-       
         movie->Initialize(g->nx, g->ny);
         movie->SetFileName("movie.avi");
         movie->Start();

@@ -7,8 +7,16 @@
 #include "simCuda3D/Cuda_grid.h"
 #include <cuda_runtime.h>
 
+//array indexing macros
+#define IDX(i, j, k) ((i) + (j) * (NX) + (k) * (NX) * (NY) )
+#define K(index) (index / (NX * NY))
+#define J(index) ((index - (K(index)*NX*NY))/NX)
+#define I(index) ((index) - J(index) * NX - K(index) * NX * NY)
 
-void* AllocateAndCopyToDevice(void *h_data, unsigned int memsize);
+
+inline void CudaInitPinnedHost(void *ptr, size_t size);
+
+void* AllocateAndCopyToDevice(void *h_data, size_t memsize);
 void CopyToHost(void *d_data, void *h_data, unsigned int memsize);
 void CopyToHost_Async(void *d_data, void *h_data, unsigned int memsize, cudaStream_t stream);
 
@@ -18,10 +26,13 @@ void CudaRetrieveField_Async(float *h_data, float *d_data, unsigned long size, c
 
 
 //initializes the host and device memory chunks for simulation
-bool CudaInitFields(grid *g, grid *dg);
-//Allocate fields memory on the CUDA device
-//nx, ny, nz refer to the main domain size (no boundaries)
-void CudaAllocateFields(grid *g);
+bool CudaInitGrid(grid *g, grid *dg);
+
+void InitGridDeltas(grid *g, grid *dg);
+
+void InitMaterialCoefs(grid *g, grid * dg);
+
+
 //free fields memory on the CUDA device
 //nx, ny, nz refer to the main domain size (no boundaries)
 void CudaFreeFields(grid *g);

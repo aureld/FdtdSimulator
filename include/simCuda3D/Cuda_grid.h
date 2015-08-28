@@ -56,6 +56,7 @@ union FieldComps
 #define MU_0INV 7.957747154594768e+05
 
 #define MAX_SIM_SIZE 2048
+#define MAX_NB_MAT  99
 
 typedef struct _grid{
     //fields and material arrays
@@ -107,9 +108,6 @@ typedef struct _grid{
     float dx, dy, dz; // mesh cell size (m)
     unsigned long currentIteration; //currently running iteration 
 
-    //cuda launch properties
-  //  dim3 BlockSize;
-  //  dim3 GridSize;
     
 } grid;
 
