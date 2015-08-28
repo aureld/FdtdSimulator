@@ -72,12 +72,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>..\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)x64\bin\</OutDir>
-    <IntDir>C:\code\fdtdSimC\build\runCudaFDTD.dir\Debug\</IntDir>
+    <OutDir>$(SolutionDir)build\x64\bin\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>runCudaFDTD</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)x64\bin\</OutDir>
+    <OutDir>$(SolutionDir)\build\x64\bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

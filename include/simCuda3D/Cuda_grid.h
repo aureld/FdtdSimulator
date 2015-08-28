@@ -35,10 +35,27 @@ union FieldComps
 
 #define MAT_SRC         99
 
+#define MAX_MAT         9
+
 #define XX              0
 #define YY              1
 #define ZZ              2
 
+#define TILEXX          16
+#define TILEYY          16
+
+
+#define tx threadIdx.x
+#define ty threadIdx.y
+
+#define bx blockIdx.x
+#define by blockIdx.y
+
+#define EPSILON_0 8.854187817E-12
+#define MU_0  1.256637061435917e-06
+#define MU_0INV 7.957747154594768e+05
+
+#define MAX_SIM_SIZE 2048
 
 typedef struct _grid{
     //fields and material arrays
@@ -48,14 +65,16 @@ typedef struct _grid{
     float * hx;
     float * hy;
     float * hz;
-    unsigned int   * mat; // material IDs array
+    unsigned int * mat; // material IDs array 
+    float * epsilon; //epsilon values corresponding to mat ids
+    unsigned int Nmats; //number of different materials used
 
     //coefficients arrays
-    float * Ca;  // (1 - sigma*dt/2*epsilon) / (1 + sigma*dt/2*epsilon) array
-    float * Cb1; // (dt/epsilon*delta1) / (1 + sigma*dt/2*epsilon) array
-    float * Cb2; // (dt/epsilon*delta2) / (1 + sigma*dt/2*epsilon) array
-    float * Db1; // (dt/mu*delta1)
-    float * Db2; // (dt/mu*delta2)
+    float * C1;  // (1 - sigma*dt/2*epsilon) / (1 + sigma*dt/2*epsilon) array
+    float * C2; // (dt/epsilon*delta1) / (1 + sigma*dt/2*epsilon) array
+   // float * Cb2; // (dt/epsilon*delta2) / (1 + sigma*dt/2*epsilon) array
+    //float * Db1; // (dt/mu*delta1)
+    //float * Db2; // (dt/mu*delta2)
 
     //source arrays (1 source only for now)
     float * srcField; //auxiliary array for the source amplitude vs time (precomputed)
@@ -78,6 +97,10 @@ typedef struct _grid{
     //grid properties
     unsigned int nx, ny, nz, domainSize; //grid size
     unsigned int layoutx, layouty, layoutz; //nb of cells in layout
+    float *dEx, *dEy, *dEz; //normalized deltas (dt/dx, dt/dy, dt/dz). Suitable for non-uniform mesh. Avoids divisions in kernels
+    float *dHx, *dHy, *dHz; //normalized deltas (dt/(mu*dx), dt/(mu*dy), dt/(mu*dz)).
+
+
     int offset; //used to correspond to material indices in OptiFDTD
     unsigned long nt; // number of time steps
     float dt; //time step size (sec)

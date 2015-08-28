@@ -10,6 +10,7 @@
 #include "JsonParser/FileIO.h"
 #include "Movielib/MovieLib.h"
 #include "common_defs.h"
+#include <time.h>
 
 using namespace std;
 
@@ -17,46 +18,30 @@ using namespace std;
 void main() 
 {
     grid *g, *dg; //g is the host grid, dg is the device grid
-    Movie *movie;
+    bool MOVIE = false;
+   
     g = new grid();
     dg = new grid();
-    movie = new Movie();
+    Movie *movie;
+
+    clock_t tstart, tcurrent, tprevious;
+    int display_freq = 100;
+
+    //create 1 stream for computations, and 1 for data transfer 
+    cudaStream_t compute_stream;
+    cudaStream_t transfer_stream;
+    CUDA_CHECK(cudaStreamCreate(&compute_stream));
+    CUDA_CHECK(cudaStreamCreate(&transfer_stream));
+
+
+    //parse input data file
     JsonDocument *doc = new JsonDocument();
     FileIO *fio = new FileIO();
     JsonParser *parser = new JsonParser(doc, fio);
     parser->ParseJsonFile("testSim.txt", g); //retrieve all parameters and material data from json file
-    //create the field arrays
-    g->ex = (float *)cust_alloc(sizeof(float)*g->domainSize);
-    g->ey = (float *)cust_alloc(sizeof(float)*g->domainSize);
-    g->ez = (float *)cust_alloc(sizeof(float)*g->domainSize);
-    g->hx = (float *)cust_alloc(sizeof(float)*g->domainSize);
-    g->hy = (float *)cust_alloc(sizeof(float)*g->domainSize);
-    g->hz = (float *)cust_alloc(sizeof(float)*g->domainSize);
-
-    //source field data is amplitude vs time (precomputed amplitude)
-    g->srcField = (float *)cust_alloc(sizeof(float)*g->nt);
-
-    //time series point detector initialization
-    g->detEx = (float *)cust_alloc(sizeof(float)*g->nt);
-
-
-    //initialize the source amplitude data
-    for (unsigned long index = 0; index < g->nt; index++)
-    {
-        double d_efftime = index * g->dt;
-        double envelope = 1.0 - exp(-(d_efftime / g->rTime)); //CW for now
-        g->srcField[index] = g->amplitude * envelope * sin(g->omega * d_efftime + g->initPhase);
-    }
-
-    CudaWriteTimeSeriesData("srcEx.f2d", g->srcField, g->nt);
-
-
-    //create the movie
-    unsigned char *buf = new unsigned char[g->nx * g->ny * 3];
-    movie->Initialize(g->nx, g->ny);
-    movie->SetFileName("movie.avi");
-    movie->Start();
-
+    
+    //DEBUG
+   // g->nt = 1000;
 
     if (CudaInitGrid(g, dg) == false)
     {
@@ -69,30 +54,75 @@ void main()
         exit(-1);
     }
 
+    //DEBUG - SHOW source field
+    //CudaWriteTimeSeriesData("srcEx.f2d", g->srcField, g->nt);
+
+    unsigned char *buf = new unsigned char[g->nx * g->ny * 3];
+    //create the movie
+    if (MOVIE)
+    {
+        movie = new Movie();
+       
+        movie->Initialize(g->nx, g->ny);
+        movie->SetFileName("movie.avi");
+        movie->Start();
+    }
 
     //calculate the grid and block size for kernel launches
     //query the card to use the max number of threads per block possible
-    unsigned int blocksize = 0, gridsize = 0;
+    dim3 blocksize = 0, gridsize = 0;
     CudaGetBlockSize(blocksize, gridsize, g);
-
-
 
     //main FDTD loop
     printf("Starting simulation...\n");
+    printf("Grid parameters: Block size = (%d, %d), grid size = (%d, %d)\n", blocksize.x, blocksize.y, gridsize.x, gridsize.y);
+    printf("total grid size: %d\n", g->domainSize);
+
+    //start the timer
+    double speed, elapsed_time;
+
+    tstart = clock();
+    tcurrent = tstart;
     for (g->currentIteration = 0; g->currentIteration < g->nt; g->currentIteration++)
     {
-        CudaCalculateStep(blocksize, gridsize, dg, g->currentIteration);
-        CudaRetrieveField(g->ex, dg->ex, sizeof(float)*g->domainSize);
+        if (MOVIE)
+        {
+            CudaRetrieveField_Async(g->ex, dg->ex, sizeof(float)*g->domainSize, transfer_stream); //initiate copy while the kernel is running
+        }
 
-        PrepareFrame(g, buf);
-        movie->SetData(buf);
-        movie->Write();
+        CudaCalculateStep(blocksize, gridsize, dg, g->currentIteration, compute_stream); //hands off field updates to device
+        
 
-        if (g->currentIteration % 1000 == 0)
-            printf("step %d / %d\n", g->currentIteration, g->nt-1);
+        if (MOVIE)
+        {
+            PrepareFrame(g, buf);
+            movie->SetData(buf);
+            movie->Write();
+        }
+
+        //display update info to console 
+        if ((g->currentIteration % display_freq == 0) && (g->currentIteration > 1))
+        {
+            tprevious = tcurrent;
+            tcurrent = clock();
+            speed = (double)g->domainSize*display_freq / ((double)(tcurrent - tprevious) / CLOCKS_PER_SEC) / 1e6; //Mcells/s
+            elapsed_time = (double)(tcurrent - tstart)/CLOCKS_PER_SEC ;
+            printf("\rstep %d / %d, elapsed time %.2f s, speed: %.2f Mcells/s             ", g->currentIteration, g->nt-1 , elapsed_time, speed);
+        }
+            
     }
+    printf("\nDone!\n");
+    tcurrent = clock();
+    speed = (double)g->domainSize*g->nt / ((double)(tcurrent - tstart) / CLOCKS_PER_SEC) / 1e6; //Mcells/s
+    elapsed_time = (double)(tcurrent - tstart) / CLOCKS_PER_SEC;
+    printf("Simulation stats: steps %d, elapsed time %.2f s, avg. speed: %.2f Mcells/s ", g->nt, elapsed_time, speed);
 
-    movie->End();
+
+
+    if (MOVIE)
+    {
+        movie->End();
+    }
     //retrieve all field data (final state)
    // CudaRetrieveAll(g, dg);
     CudaRetrieveField(g->detEx, dg->detEx, sizeof(float)*g->nt);
@@ -100,6 +130,7 @@ void main()
 
     printf("\n");
     CudaFreeFields(dg);
-
+    cudaStreamDestroy(compute_stream);
+    cudaStreamDestroy(transfer_stream);
     exit(0);
 }

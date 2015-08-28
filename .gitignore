@@ -21,3 +21,6 @@ MovieLib/x64/
 JsonParser/x64/
 SimCuda3D/x64/
 SimCuda3D/Activity2.nvact
+CudaCoreLib/CudaCoreLib.dir/
+CudaCoreLib/Debug/
+CudaCoreLib/x64/Debug/

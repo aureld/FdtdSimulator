@@ -16,7 +16,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\common_defs.h" />
-    <ClCompile Include="..\Include\SimCuda3D\Cuda_grid.h" />
+    <ClCompile Include="..\Include\SimCuda3D\Cuda_grid.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Include\SimCuda3D\Cuda_macros.h" />
     <ClCompile Include="..\Include\SimCuda3D\SimCudaFunctions.h" />
   </ItemGroup>

@@ -71,82 +71,24 @@ bool JsonDocument::WriteToGrid(grid *g)
     }
     else
     {
-        perror("[JsonParser]: Ca array not found!");
+        perror("[JsonParser]: mat array not found!");
         return false;
     }
 
-    itr = doc.FindMember("Ca");
-    if (itr != doc.MemberEnd())
-    {
-        const Value& a = doc["Ca"]; 
-        assert(a.IsArray());
-        g->Ca = (float *) cust_alloc(a.Size()*sizeof(float));
-        for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
-           g->Ca[i] = a[i].GetDouble();
-    }
-    else
-    {
-        perror("[JsonParser]: Ca array not found!");
-        return false;
-    }
+    itr = doc.FindMember("Nmats"); g->Nmats = (itr != doc.MemberEnd()) ? itr->value.GetDouble() : NULL;
 
-    itr = doc.FindMember("Cb1");
+    itr = doc.FindMember("epsilon");
     if (itr != doc.MemberEnd())
     {
-        const Value& a = doc["Cb1"];
+        const Value& a = doc["epsilon"];
         assert(a.IsArray());
-        g->Cb1 = (float *)cust_alloc(a.Size()*sizeof(float));
-        for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
-            g->Cb1[i] = a[i].GetDouble();
+        g->epsilon = (float *)cust_alloc(a.Size()*sizeof(float));
+        for (SizeType i = 0; i < a.Size(); i++) 
+            g->epsilon[i] =(float) a[i].GetDouble();
     }
     else
     {
-        perror("[JsonParser]: Cb1 array not found!");
-        return false;
-    }
-
-    itr = doc.FindMember("Cb2");
-    if (itr != doc.MemberEnd())
-    {
-        const Value& a = doc["Cb2"];
-        assert(a.IsArray());
-        g->Cb2 = (float *)cust_alloc(a.Size()*sizeof(float));
-        for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
-            g->Cb2[i] = a[i].GetDouble();
-    }
-    else
-    {
-        perror("[JsonParser]: Cb2 array not found!");
-        return false;
-    }
-
-    itr = doc.FindMember("Db1");
-    if (itr != doc.MemberEnd())
-    {
-        const Value& a = doc["Db1"];
-        assert(a.IsArray());
-        g->Db1 = (float *)cust_alloc(a.Size()*sizeof(float));
-        for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
-            g->Db1[i] = a[i].GetDouble();
-    }
-    else
-    {
-        perror("[JsonParser]: Db1 array not found!");
-        return false;
-    }
-
-    itr = doc.FindMember("Db2");
-    if (itr != doc.MemberEnd())
-    {
-        const Value& a = doc["Db2"];
-        assert(a.IsArray());
-        g->Db2 = (float *)cust_alloc(a.Size()*sizeof(float));
-        for (SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
-            g->Db2[i] = a[i].GetDouble();
-    }
-    else
-    {
-        perror("[JsonParser]: Db2 array not found!");
+        perror("[JsonParser]: epsilon array not found!");
         return false;
     }
 
@@ -209,51 +151,18 @@ bool JsonDocument::WriteToDocument(FILE* f, grid *g)
     }
     doc.AddMember("mat", tmp, allocator);
 
+    assert(g->Nmats >= 1);
+    tmp.SetUint(g->Nmats); doc.AddMember("Nmats", tmp, allocator);
 
-    assert(g->Ca != NULL);
+    assert(g->epsilon != NULL);
     tmp.SetArray();
-    for (unsigned int i = 0; i < g->domainSize; i++)
+    for (unsigned int i = 0; i < g->Nmats; i++)
     {
-        val.SetDouble(g->Ca[i]);
+        val.SetDouble(g->epsilon[i]);
         tmp.PushBack(val, doc.GetAllocator());
     }
-    doc.AddMember("Ca", tmp, allocator);
+    doc.AddMember("epsilon", tmp, allocator);
 
-    assert(g->Cb1 != NULL);
-    tmp.SetArray();
-    for (unsigned int i = 0; i < g->domainSize; i++)
-    {
-        val.SetDouble(g->Cb1[i]);
-        tmp.PushBack(val, doc.GetAllocator());
-    }
-    doc.AddMember("Cb1", tmp, allocator);
-
-    assert(g->Cb2 != NULL);
-    tmp.SetArray();
-    for (unsigned int i = 0; i < g->domainSize; i++)
-    {
-        val.SetDouble(g->Cb2[i]);
-        tmp.PushBack(val, doc.GetAllocator());
-    }
-    doc.AddMember("Cb2", tmp, allocator);
-
-    assert(g->Db1 != NULL);
-    tmp.SetArray();
-    for (unsigned int i = 0; i < g->domainSize; i++)
-    {
-        val.SetDouble(g->Db1[i]);
-        tmp.PushBack(val, doc.GetAllocator());
-    }
-    doc.AddMember("Db1", tmp, allocator);
-
-    assert(g->Db2 != NULL);
-    tmp.SetArray();
-    for (unsigned int i = 0; i < g->domainSize; i++)
-    {
-        val.SetDouble(g->Db2[i]);
-        tmp.PushBack(val, doc.GetAllocator());
-    }
-    doc.AddMember("Db2", tmp, allocator);
 
     FileWriteStream os(f, writeBuffer, sizeof(writeBuffer));
     Writer<FileWriteStream> writer(os);

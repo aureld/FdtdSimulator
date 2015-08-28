@@ -1,5 +1,6 @@
 #include "simCuda3D/Cuda_memory.h"
 #include "simCuda3D/Cuda_macros.h"
+#include <cuda_runtime.h>
 
 //allocates a chunck of global memory on device and copy the data there
 void* AllocateAndCopyToDevice(void *h_data, unsigned int memsize)
@@ -12,7 +13,13 @@ void* AllocateAndCopyToDevice(void *h_data, unsigned int memsize)
     return d_data;
 }
 
-//copies a chunk of global memory from device to host memory
+//copies a chunk of global memory from device to host memory, async version
+void CopyToHost_Async(void *d_data, void *h_data, unsigned int memsize, cudaStream_t stream)
+{
+    CUDA_SAFE_CALL(cudaMemcpyAsync(h_data, d_data, memsize, cudaMemcpyDeviceToHost, stream));
+}
+
+// copies a chunk of global memory from device to host memory
 void CopyToHost(void *d_data, void *h_data, unsigned int memsize)
 {
     CUDA_SAFE_CALL(cudaMemcpy(h_data, d_data, memsize, cudaMemcpyDeviceToHost));
@@ -24,7 +31,7 @@ bool CudaInitFields(grid *g, grid *dg)
 {
     if (g->ex == NULL || g->ey == NULL || g->ez == NULL || g->hx == NULL || g->hy == NULL || g->hz == NULL)
     {
-        perror("[CudaInitGrid]: host fields must be initialized");
+        perror("[CudaInitFields]: host fields must be initialized");
         return false;
     }
 
@@ -61,8 +68,14 @@ bool CudaRetrieveAll(grid *g, grid *dg)
 }
 
 
+//copies a specific field from device memory to host - Async version
+void CudaRetrieveField_Async(float *h_data, float *d_data, unsigned long size, cudaStream_t stream)
+{
+    CopyToHost_Async(d_data, h_data, size, stream);
+}
+
 //copies a specific field from device memory to host
-inline void CudaRetrieveField(float *h_data, float *d_data, unsigned long size)
+void CudaRetrieveField(float *h_data, float *d_data, unsigned long size)
 {
     CopyToHost(d_data, h_data, size);
 }
@@ -73,8 +86,6 @@ void CudaFreeFields(grid *g)
 {
     cudaFree(g->ex);     cudaFree(g->ey);     cudaFree(g->ez);
     cudaFree(g->hx);	 cudaFree(g->hy);     cudaFree(g->hz);
-    cudaFree(g->Ca);     cudaFree(g->Cb1);    cudaFree(g->Cb2);
-    cudaFree(g->Db1);    cudaFree(g->Db2);
     cudaFree(g->srcField);
     cudaFree(g->detEx);  cudaFree(g->detEy);  cudaFree(g->detEz);
     cudaFree(g->detHx);  cudaFree(g->detHy);  cudaFree(g->detHz);
